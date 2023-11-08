@@ -1,9 +1,9 @@
 package Alu
 
-import project.Alu
 import chisel3._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
+import riscv.Alu
 
 class OrTest extends AnyFlatSpec with ChiselScalatestTester{
   "OR" should "Pass" in {
