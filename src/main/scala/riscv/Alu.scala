@@ -2,6 +2,7 @@ package riscv
 
 import chisel3.util._
 import chisel3._
+import riscv.AluType._
 
 class Alu extends Module {
   val io = IO(new Bundle() {
@@ -10,16 +11,6 @@ class Alu extends Module {
     val res = Output(UInt(32.W))
     val control = Input(UInt(5.W))
   })
-  val Add = 0.U
-  val Sub = 1.U
-  val Sll = 2.U
-  val Xor = 3.U
-  val Srl = 4.U
-  val Sra = 5.U
-  val Or = 6.U
-  val And = 7.U
-  val Slt = 8.U
-  val Sltu = 9.U
 
 
   // default value
@@ -27,34 +18,34 @@ class Alu extends Module {
 
   //ADD
   switch (io.control) {
-    is(Add) {
+    is(ADD.id.U) {
       io.res := io.op1 + io.op2
    }
-    is(Sub) {
+    is(SUB.id.U) {
       io.res := io.op1 - io.op2
     }
-    is(Sll) {
+    is(SLL.id.U) {
       io.res := io.op1 << io.op2(4,0)
     }
-    is(Xor) {
+    is(XOR.id.U) {
       io.res := io.op1 ^ io.op2
     }
-    is(Srl) {
+    is(SRL.id.U) {
       io.res := io.op1 >> io.op2(4,0)
     }
-    is(Sra) {
+    is(SRA.id.U) {
       io.res := (io.op1.asSInt >> io.op2(4,0)).asUInt
     }
-    is(Or) {
+    is(OR.id.U) {
       io.res := io.op1 | io.op2
     }
-    is(And) {
+    is(AND.id.U) {
       io.res := io.op1 & io.op2
     }
-    is(Slt) {
+    is(SLT.id.U) {
       io.res := (io.op1.asSInt < io.op2.asSInt).asUInt
     }
-    is(Sltu) {
+    is(SLTU.id.U) {
       io.res := (io.op1 < io.op2).asUInt
     }
   }
