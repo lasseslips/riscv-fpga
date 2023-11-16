@@ -11,6 +11,7 @@ class Decode extends Module {
     val imm = Output(UInt(32.W))
     val insType = Output(UInt(6.W))
   })
+
   val insOpcode = io.instruction(6,0)
 
   val funct3 = io.instruction(14,12)
@@ -18,6 +19,9 @@ class Decode extends Module {
   io.rs1Idx := io.instruction(19,15)
   io.rs2Idx := io.instruction(24,20)
   io.wrIdx := io.instruction(11,7)
+  io.imm := DontCare
+  io.insType := DontCare
+
   switch(insOpcode) {
     is(Opcode.Alu.U) {
       switch(funct3) {
