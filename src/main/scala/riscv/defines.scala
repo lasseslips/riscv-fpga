@@ -60,12 +60,6 @@ object insType {
   val FENCE = 0x25
   val ECALL = 0x26
   val EBREAK = 0x27
-  val CSRRW = 0x28
-  val CSRRS = 0x29
-  val CSRRC = 0x2A
-  val CSRRWI = 0x2B
-  val CSRRSI = 0x2C
-  val CSRRCI = 0x2D
 }
 
 object AluFunct3 {

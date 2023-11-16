@@ -70,21 +70,21 @@ class DecodeTest extends AnyFlatSpec with ChiselScalatestTester{
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(3.U)
       dut.io.insType.expect(9.U)
-      /*
       //addi
-      dut.io.instruction.poke("b00000000001100010111000010110011".U)
-      dut.io.wrIdx.expect(2.U)
-      dut.io.rs1Idx.expect(3.U)
-      dut.io.imm.expect(4.U)
+      dut.io.instruction.poke("b00000000101000010000000010010011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(10.U)
 
       dut.io.insType.expect("h0A".U)
+
       //SLTI
-      dut.io.instruction.poke("00000000001100010010000010010011".U)
+      dut.io.instruction.poke("b00000000001100010010000010010011".U)
       dut.io.wrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.imm.expect(3.U)
       dut.io.insType.expect(11.U)
-      //SLTIU 
+      //SLTIU
       dut.io.instruction.poke("b00000000001100010011000010010011".U)
       dut.io.wrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
@@ -126,34 +126,120 @@ class DecodeTest extends AnyFlatSpec with ChiselScalatestTester{
       dut.io.rs1Idx.expect(2.U)
       dut.io.imm.expect(3.U)
       dut.io.insType.expect(18.U)
-      */
-      //BEQ 
-      //BNE 
-      //BLT 
-      //BGE 
+      //BEQ
+      dut.io.instruction.poke("b00000000001000001000000101100011".U)
+      dut.io.rs1Idx.expect(1.U)
+      dut.io.rs2Idx.expect(2.U)
+      dut.io.imm.expect(2.U)
+      dut.io.insType.expect(19.U)
+      //BNE
+      dut.io.instruction.poke("b00000000001000001001000101100011".U)
+      dut.io.rs1Idx.expect(1.U)
+      dut.io.rs2Idx.expect(2.U)
+      dut.io.imm.expect(2.U)
+      dut.io.insType.expect(20.U)
+      //BLT
+      dut.io.instruction.poke("b00000000001000001100000101100011".U)
+      dut.io.rs1Idx.expect(1.U)
+      dut.io.rs2Idx.expect(2.U)
+      dut.io.imm.expect(2.U)
+      dut.io.insType.expect(21.U)
+      //BGE
+      dut.io.instruction.poke("b00000000111101110101011001100011".U)
+      dut.io.rs1Idx.expect(14.U)
+      dut.io.rs2Idx.expect(15.U)
+      dut.io.imm.expect(12.U)
+      dut.io.insType.expect(0x16.U)
       //BLTU
+      dut.io.instruction.poke("b00000000001000001110000101100011".U)
+      dut.io.rs1Idx.expect(1.U)
+      dut.io.rs2Idx.expect(2.U)
+      dut.io.imm.expect(2.U)
+      dut.io.insType.expect(23.U)
       //BGEU
+      dut.io.instruction.poke("b00000000001000001111000101100011".U)
+      dut.io.rs1Idx.expect(1.U)
+      dut.io.rs2Idx.expect(2.U)
+      dut.io.imm.expect(2.U)
+      dut.io.insType.expect(24.U)
       //LB
+      dut.io.instruction.poke("b00000000001100010000000010000011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(25.U)
       //LH
+      dut.io.instruction.poke("b00000000001100010001000010000011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(26.U)
       //LW
+      dut.io.instruction.poke("b00000000001100010010000010000011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(27.U)
       //LBU
+      dut.io.instruction.poke("b00000000001100010100000010000011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(28.U)
       //LHU
+      dut.io.instruction.poke("b00000000001100010101000010000011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(29.U)
       //SB
+      dut.io.instruction.poke("b00000000000100010000000110100011".U)
+      dut.io.rs2Idx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(30.U)
       //SH
+      dut.io.instruction.poke("b00000000000100010001000110100011".U)
+      dut.io.rs2Idx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(31.U)
       //SW
+      dut.io.instruction.poke("b00000000000100010010000110100011".U)
+      dut.io.rs2Idx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(32.U)
       //LUI
-      //AUIPC 
+      dut.io.instruction.poke("b00000000000000000010000010110111".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.imm.expect((2 << 11).U)
+      dut.io.insType.expect(33.U)
+      //AUIPC
+      dut.io.instruction.poke("b00000000000000000010000010010111".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.imm.expect((2 << 11).U)
+      dut.io.insType.expect(34.U)
       //JAL
+      dut.io.instruction.poke("b00000000001000000000000011101111".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.imm.expect(2.U)
+      dut.io.insType.expect(35.U)
       //JALR
-      //FENCE 
-      //ECALL 
+      dut.io.instruction.poke("b00000000001100010000000011100111".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(36.U)
+      //FENCE
+      //TODO
+      //ECALL
+      dut.io.instruction.poke("b00000000000000000000000001110011".U)
+      dut.io.insType.expect(38.U)
+
       //EBREAK
-      //CSRRW 
-      //CSRRS 
-      //CSRRC 
-      //CSRRWI
-      //CSRRSI
-      //CSRRCI
+      dut.io.instruction.poke("b00000000000100000000000001110011".U)
+      dut.io.insType.expect(39.U)
       }
     }
 }

@@ -78,6 +78,7 @@ class Decode extends Module {
           io.insType := insType.XORI.U
         }
         is(AluImmFunct3.SRLI_SRAI.U) {
+          io.imm := io.instruction(24,20)
           when(funct7 === "h20".U) {
             io.insType := insType.SRAI.U
           } .otherwise {
@@ -88,7 +89,7 @@ class Decode extends Module {
           io.insType := insType.ORI.U
         }
         is(AluImmFunct3.ANDI.U) {
-          io.insType := insType.ADDI.U
+          io.insType := insType.ANDI.U
         }
       }
 
@@ -159,11 +160,11 @@ class Decode extends Module {
 
     }
     is(Opcode.Lui.U) {
-      io.imm := Cat(io.instruction(31,12), "h000".U)
+      io.imm := Cat(io.instruction(31,12), "b0".U(11.W))
       io.insType := insType.LUI.U
     }
     is(Opcode.AuiPc.U) {
-      io.imm := Cat(io.instruction(31,12), "h000".U)
+      io.imm := Cat(io.instruction(31,12), "b0".U(11.W))
       io.insType := insType.AUIPC.U
     }
     is(Opcode.Jal.U) {
@@ -183,10 +184,11 @@ class Decode extends Module {
       io.insType := insType.FENCE.U
     }
     is(Opcode.ECall.U) {
-      when(funct7 === 0.U) {
-        io.insType := insType.ECALL.U
-      } .otherwise {
+      val isEBreak = io.instruction(20)
+      when(isEBreak === 1.U) {
         io.insType := insType.EBREAK.U
+      } .otherwise {
+        io.insType := insType.ECALL.U
       }
     }
   }
