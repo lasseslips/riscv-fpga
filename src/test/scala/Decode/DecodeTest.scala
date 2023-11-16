@@ -8,16 +8,152 @@ import riscv.Decode
 class DecodeTest extends AnyFlatSpec with ChiselScalatestTester{
   "DecodeTest" should "Pass" in {
     test(new Decode) { dut =>
+      //add
       dut.io.instruction.poke("b00000000000100010000000010110011".U)
       dut.io.wrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(1.U)
       dut.io.insType.expect(0.U)
-      dut.io.instruction.poke("b00000000010000011000000100010011".U)
+      //sub
+      dut.io.instruction.poke("b01000000001100010000000010110011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.rs2Idx.expect(3.U)
+      dut.io.insType.expect(1.U)
+
+      //sll
+      dut.io.instruction.poke("b00000000001100010001000010110011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.rs2Idx.expect(3.U)
+      dut.io.insType.expect(2.U)
+      //slt 
+      dut.io.instruction.poke("b00000000001100010010000010110011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.rs2Idx.expect(3.U)
+      dut.io.insType.expect(3.U)
+      //sltu
+      dut.io.instruction.poke("b00000000001100010011000010110011".U)
+
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.rs2Idx.expect(3.U)
+      dut.io.insType.expect(4.U)
+      //xor
+      dut.io.instruction.poke("b00000000001100010100000010110011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.rs2Idx.expect(3.U)
+      dut.io.insType.expect(5.U)
+      //srl
+      dut.io.instruction.poke("b00000000001100010101000010110011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.rs2Idx.expect(3.U)
+      dut.io.insType.expect(6.U)
+      //sra
+      dut.io.instruction.poke("b01000000001100010101000010110011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.rs2Idx.expect(3.U)
+      dut.io.insType.expect(7.U)
+      //or
+      dut.io.instruction.poke("b00000000001100010110000010110011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.rs2Idx.expect(3.U)
+      dut.io.insType.expect(8.U)
+      //and
+      dut.io.instruction.poke("b00000000001100010111000010110011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.rs2Idx.expect(3.U)
+      dut.io.insType.expect(9.U)
+      /*
+      //addi
+      dut.io.instruction.poke("b00000000001100010111000010110011".U)
       dut.io.wrIdx.expect(2.U)
       dut.io.rs1Idx.expect(3.U)
       dut.io.imm.expect(4.U)
+
       dut.io.insType.expect("h0A".U)
+      //SLTI
+      dut.io.instruction.poke("00000000001100010010000010010011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(11.U)
+      //SLTIU 
+      dut.io.instruction.poke("b00000000001100010011000010010011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(12.U)
+      //XORI    
+      dut.io.instruction.poke("b00000000001100010100000010010011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(13.U)
+      //ORI   
+      dut.io.instruction.poke("b00000000001100010110000010010011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(14.U)
+      //ANDI
+      dut.io.instruction.poke("b00000000001100010111000010010011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(15.U)
+      //SLLI
+      dut.io.instruction.poke("b00000000001100010001000010010011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(16.U)
+      //SRLI
+      dut.io.instruction.poke("b00000000001100010101000010010011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(17.U)
+      //SRAI
+      dut.io.instruction.poke("b01000000001100010101000010010011".U)
+      dut.io.wrIdx.expect(1.U)
+      dut.io.rs1Idx.expect(2.U)
+      dut.io.imm.expect(3.U)
+      dut.io.insType.expect(18.U)
+      */
+      //BEQ 
+      //BNE 
+      //BLT 
+      //BGE 
+      //BLTU
+      //BGEU
+      //LB
+      //LH
+      //LW
+      //LBU
+      //LHU
+      //SB
+      //SH
+      //SW
+      //LUI
+      //AUIPC 
+      //JAL
+      //JALR
+      //FENCE 
+      //ECALL 
+      //EBREAK
+      //CSRRW 
+      //CSRRS 
+      //CSRRC 
+      //CSRRWI
+      //CSRRSI
+      //CSRRCI
+      }
     }
-  }
 }
