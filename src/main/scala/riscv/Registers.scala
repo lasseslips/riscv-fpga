@@ -19,12 +19,11 @@ class Registers extends Module {
   val registers = RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
   registers(0) := 0.U
 
+  io.reg1 := registers(io.rs1Idx)
+  io.reg2 := registers(io.rs2Idx)
 
   when(io.write) {
     registers(io.wrIdx) := io.dataIn
-  } .otherwise {
-    io.reg1 := registers(io.rs1Idx)
-    io.reg2 := registers(io.rs2Idx)
   }
 
 }
