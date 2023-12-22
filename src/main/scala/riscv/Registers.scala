@@ -22,8 +22,13 @@ class Registers extends Module {
   io.reg1 := registers(io.rs1Idx)
   io.reg2 := registers(io.rs2Idx)
 
+
   when(io.write) {
     registers(io.wrIdx) := io.dataIn
   }
 
+}
+object RegisterTest extends App {
+  println("Generating RISC-V verilog")
+  emitVerilog(new Registers, Array("--target-dir", "generated"))
 }

@@ -12,7 +12,10 @@ class Decode extends Module {
     val imm = Output(UInt(32.W))
     val insType = Output(UInt(6.W))
     val types = Output(UInt(5.W))
+    val instructiontest = Output(UInt(32.W))
   })
+
+  io.instructiontest := io.instruction
 
   val insOpcode = io.instruction(6, 0)
 

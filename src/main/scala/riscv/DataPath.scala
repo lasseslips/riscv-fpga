@@ -7,11 +7,17 @@ class DataPath extends Module {
     //DEBUG
     val instruction = Input(UInt(32.W))
     val writeBack = Output(UInt(32.W))
+    val instructionMem = Output(UInt(32.W))
+    val instructionDataIn = Input(UInt(32.W))
+    val instructionWrite = Input(Bool())
+    val reg1 = Output(UInt(32.W))
+    val reg2 = Output(UInt(32.W))
+    val rs1Idx = Input(UInt(5.W))
   })
   io.writeBack := DontCare
 
   //Module loading
-  val instructionMemory = Module(new InstructionMemory)
+  val insMem = Module(new InstructionMemory)
   val decode = Module(new Decode)
   val control = Module(new Control)
   val registerFile = Module(new Registers)
@@ -19,6 +25,9 @@ class DataPath extends Module {
   val branchControl = Module(new Branch)
   val dataMemory = Module(new DataMemory)
 
+  io.reg1 := registerFile.io.reg1
+  io.reg2 := registerFile.io.reg2
+  registerFile.io.rs1Idx := io.rs1Idx
 
 
   //Init
@@ -39,12 +48,15 @@ class DataPath extends Module {
 
 
   //InstructionMemory
-  instructionMemory.io.addr := pc
-  instructionMemory.io.dataIn := DontCare
-  instructionMemory.io.write := DontCare
+  insMem.io.addr := pc
+  insMem.io.dataIn := io.instructionDataIn
+  insMem.io.write := io.instructionWrite
+
+  //io.instructionMem := decode.io.instructiontest
+  io.instructionMem := insMem.io.dataOut
 
   //Decode
-  //decode.io.instruction := instructionMemory.io.dataOut
+  decode.io.instruction := insMem.io.dataOut
   decode.io.instruction := io.instruction
 
   //Control
@@ -96,5 +108,5 @@ class DataPath extends Module {
 
 object Main extends App {
   println("Generating RISC-V verilog")
-  emitVerilog(new DataPath, Array("--target-dir", "generated"))
+  emitVerilog(new DataPath, Array("--target-dir", "generated","--no-dce"))
 }

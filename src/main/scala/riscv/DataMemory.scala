@@ -58,7 +58,7 @@ class DataMemory extends Module {
     }
   }
   // 1,048,576 x 32 bit = 32Mb
-  val mem = SyncReadMem(Math.pow(2, 20).toInt, Vec(4, UInt(8.W)))
+  val mem = SyncReadMem(Math.pow(2, 10).toInt, Vec(4, UInt(8.W)))
 
   io.dataOut := DontCare
   when(io.write) {

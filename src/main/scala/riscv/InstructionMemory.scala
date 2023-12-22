@@ -21,3 +21,5 @@ class InstructionMemory extends Module {
     io.dataOut := mem.read(io.addr, true.B)
   }
 }
+
+
