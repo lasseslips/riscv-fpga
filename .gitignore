@@ -6,3 +6,4 @@ target/
 test_run_dir/
 .metals/
 quartus/
+*.hex
