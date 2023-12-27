@@ -68,7 +68,10 @@ class Decode extends Module {
     }
     is(Opcode.AluImm.U) {
       io.types := Types.I.id.U
-      io.imm := io.instruction(31, 20)
+      //sign extend imm
+      val slice = io.instruction(31, 20)
+      val signBit = slice(11)
+      io.imm := Cat(Fill(20, signBit), slice)
       switch(funct3) {
         is(AluImmFunct3.ADDI.U) {
           io.insType := AluType.ADD.id.U
@@ -108,19 +111,23 @@ class Decode extends Module {
       val imm4_1 = io.instruction(11, 8)
       val imm11 = io.instruction(7)
       val imm12 = io.instruction(31)
-      io.imm := Cat(imm12, imm11, imm10_5, imm4_1, 0.U)
+      //the fill is for sign extention
+      io.imm := Cat(Fill(20,imm12),imm12, imm11, imm10_5, imm4_1, 0.U)
       io.insType := funct3
     }
     is(Opcode.Load.U) {
       io.types := Types.LOAD.id.U
-      io.imm := io.instruction(31, 20)
+      val slice = io.instruction(31, 20)
+      val signBit = slice(11)
+      io.imm := Cat(Fill(20, signBit), slice)
       io.insType := funct3
     }
     is(Opcode.Store.U) {
       io.types := Types.S.id.U
       val imm4 = io.instruction(11, 7)
       val imm11_5 = io.instruction(31, 25)
-      io.imm := Cat(imm11_5, imm4)
+      val signBit = imm11_5(6)
+      io.imm := Cat(Fill(20,signBit), imm11_5, imm4)
       io.insType := funct3
     }
     is(Opcode.Lui.U) {
@@ -139,12 +146,15 @@ class Decode extends Module {
       val imm19_12 = io.instruction(19, 12)
       val imm11 = io.instruction(20)
       val imm10_1 = io.instruction(30, 21)
-      io.imm := Cat(imm20, imm19_12, imm11, imm10_1, 0.U)
+      io.imm := Cat(Fill(12, imm20), imm20, imm19_12, imm11, imm10_1, 0.U)
       io.insType := insType.JAL.U
     }
     is(Opcode.JalR.U) {
       io.types := Types.J.id.U
-      io.imm := io.instruction(31, 20)
+      //sign extend imm
+      val slice = io.instruction(31, 20)
+      val signBit = slice(11)
+      io.imm := Cat(Fill(20, signBit), slice)
       io.insType := insType.JALR.U
     }
     is(Opcode.Fence.U) {
