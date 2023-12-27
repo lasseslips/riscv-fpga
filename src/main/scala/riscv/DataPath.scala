@@ -2,7 +2,7 @@ package riscv
 
 import chisel3._
 import chisel3.util._
-class DataPath extends Module {
+class DataPath(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
     //DEBUG
     val instruction = Input(UInt(32.W))
@@ -14,10 +14,13 @@ class DataPath extends Module {
     val reg2 = Output(UInt(32.W))
     val rs1Idx = Input(UInt(5.W))
   })
+
+  Util.convertBinToHex(pathToBin)
+
   io.writeBack := DontCare
 
   //Module loading
-  val insMem = Module(new InstructionMemory)
+  val insMem = Module(new InstructionMemory(pathToBin + ".hex"))
   val decode = Module(new Decode)
   val control = Module(new Control)
   val registerFile = Module(new Registers)
@@ -108,5 +111,5 @@ class DataPath extends Module {
 
 object Main extends App {
   println("Generating RISC-V verilog")
-  emitVerilog(new DataPath, Array("--target-dir", "generated","--no-dce"))
+  emitVerilog(new DataPath("bin/addpos"), Array("--target-dir", "generated"))
 }
