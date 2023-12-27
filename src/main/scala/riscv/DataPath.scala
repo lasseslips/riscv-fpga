@@ -5,9 +5,8 @@ import chisel3.util._
 class DataPath(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
     //DEBUG
-    val instruction = Input(UInt(32.W))
     val writeBack = Output(UInt(32.W))
-    val instructionMem = Output(UInt(32.W))
+    //val instructionMem = Output(UInt(32.W))
     val instructionDataIn = Input(UInt(32.W))
     val instructionWrite = Input(Bool())
     val reg1 = Output(UInt(32.W))
@@ -56,11 +55,10 @@ class DataPath(pathToBin: String = "") extends Module {
   insMem.io.write := io.instructionWrite
 
   //io.instructionMem := decode.io.instructiontest
-  io.instructionMem := insMem.io.dataOut
+  //io.instructionMem := insMem.io.dataOut
 
   //Decode
   decode.io.instruction := insMem.io.dataOut
-  decode.io.instruction := io.instruction
 
   //Control
   control.io.insType := decode.io.insType
@@ -71,6 +69,8 @@ class DataPath(pathToBin: String = "") extends Module {
   registerFile.io.rs1Idx := decode.io.rs1Idx
   registerFile.io.rs2Idx := decode.io.rs2Idx
   registerFile.io.write := control.io.regWrite
+  registerFile.io.dataIn := DontCare
+
   switch(regWriteSrc) {
     is(RegWriteSrc.ALU.id.U) {
       registerFile.io.dataIn := aluRes
@@ -85,7 +85,6 @@ class DataPath(pathToBin: String = "") extends Module {
       io.writeBack := pc + 4.U
     }
   }
-  registerFile.io.dataIn := DontCare
 
   //ALU
   alu.io.control := control.io.aluOpcode
