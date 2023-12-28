@@ -132,12 +132,12 @@ class Decode extends Module {
     }
     is(Opcode.Lui.U) {
       io.types := Types.U.id.U
-      io.imm := Cat(io.instruction(31, 12), "b0".U(11.W))
+      io.imm := Cat(io.instruction(31, 12), "b0".U(12.W))
       io.insType := insType.LUI.U
     }
     is(Opcode.AuiPc.U) {
       io.types := Types.U.id.U
-      io.imm := Cat(io.instruction(31, 12), "b0".U(11.W))
+      io.imm := Cat(io.instruction(31, 12), "b0".U(12.W))
       io.insType := insType.AUIPC.U
     }
     is(Opcode.Jal.U) {
