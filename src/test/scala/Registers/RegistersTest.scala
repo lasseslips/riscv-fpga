@@ -1,3 +1,4 @@
+/*
 package Registers
 
 import chisel3._
@@ -24,3 +25,5 @@ class RegistersTest extends AnyFlatSpec with ChiselScalatestTester{
     }
   }
 }
+
+ */

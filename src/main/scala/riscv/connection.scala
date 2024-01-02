@@ -11,6 +11,16 @@ class DecEx extends Bundle {
   val regData1 = UInt(32.W)
   val regData2 = UInt(32.W)
   val pc = UInt(32.W)
+
+  val regWrite = Bool()
+  val memWrite = Bool()
+  val memIns = UInt(3.W)
+  val regWriteSrc = UInt(2.W)
+  val aluSrc = UInt(2.W)
+  val aluOpcode = UInt(5.W)
+  val branchEnable = Bool()
+  val branchType = UInt(3.W)
+  val jumpEnable = Bool()
 }
 
 class ExMem extends Bundle {

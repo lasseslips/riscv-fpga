@@ -8,7 +8,9 @@ import riscv.Alu
 class AddTest extends AnyFlatSpec with ChiselScalatestTester{
   "ADD" should "Pass" in {
     test(new Alu) { dut =>
-      dut.io.control.poke(0.U)
+      dut.io.DecEx.aluOpcode.poke(0.U)
+      dut.io.DecEx.aluSrc.poke("b00".U)
+
       dut.io.DecEx.regData1.poke(1.U)
       dut.io.DecEx.regData2.poke(2.U)
       dut.io.ExMem.addr.expect(3.U)

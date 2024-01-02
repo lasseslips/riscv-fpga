@@ -5,7 +5,7 @@ import chisel3.util._
 
 class Control extends Module {
   val io = IO(new Bundle() {
-    val insType = Input(UInt(6.W))
+    val aluOp = Input(UInt(6.W))
     val types = Input(UInt(5.W))
     val regWrite = Output(Bool())
     val memWrite = Output(Bool())
@@ -33,17 +33,17 @@ class Control extends Module {
       io.regWrite := true.B
       io.aluSrc := "b00".U
       io.regWriteSrc := RegWriteSrc.ALU.id.U
-      io.aluOpcode := io.insType
+      io.aluOpcode := io.aluOp
     }
     is(Types.I.id.U) {
       io.regWrite := true.B
       io.aluSrc := "b01".U
       io.regWriteSrc := RegWriteSrc.ALU.id.U
-      io.aluOpcode := io.insType
+      io.aluOpcode := io.aluOp
     }
     is(Types.B.id.U) {
       io.regWrite := false.B
-      io.branchType := io.insType
+      io.branchType := io.aluOp
       io.branchEnable := true.B
       io.aluSrc := "b11".U
       io.aluOpcode := insType.ADD.U
@@ -52,7 +52,7 @@ class Control extends Module {
       io.regWrite := true.B
       io.aluSrc := "b01".U
       io.aluOpcode := insType.ADD.U
-      io.memIns := io.insType(2,0)
+      io.memIns := io.aluOp(2,0)
       io.regWriteSrc := RegWriteSrc.MEMORY.id.U
     }
     is(Types.S.id.U) {
@@ -61,13 +61,13 @@ class Control extends Module {
       io.aluSrc := "b01".U
       io.aluOpcode := insType.ADD.U
       io.regWriteSrc := RegWriteSrc.MEMORY.id.U
-      io.memIns := io.insType(2,0)
+      io.memIns := io.aluOp(2,0)
     }
     is(Types.U.id.U) {
       io.regWrite := true.B
       io.aluOpcode := insType.ADD.U
       io.regWriteSrc := RegWriteSrc.ALU.id.U
-      when(io.insType === insType.LUI.U) {
+      when(io.aluOp === insType.LUI.U) {
         io.aluSrc := "b01".U
       } .otherwise {
         io.aluSrc := "b11".U
@@ -75,7 +75,7 @@ class Control extends Module {
 
     }
     is(Types.J.id.U) {
-      when(io.insType === insType.JAL.U) {
+      when(io.aluOp === insType.JAL.U) {
         io.aluSrc := "b11".U
       } .otherwise {
         io.aluSrc := "b01".U

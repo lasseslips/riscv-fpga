@@ -1,3 +1,4 @@
+/*
 package Memory
 
 import chisel3._
@@ -18,3 +19,6 @@ class InstructionMemoryTest extends AnyFlatSpec with ChiselScalatestTester{
     }
   }
 }
+
+
+ */

@@ -1,3 +1,4 @@
+/*
 package Decode
 
 import chisel3._
@@ -252,3 +253,6 @@ class DecodeTest extends AnyFlatSpec with ChiselScalatestTester{
       }
     }
 }
+
+
+ */

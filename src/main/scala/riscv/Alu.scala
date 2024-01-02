@@ -8,38 +8,23 @@ class Alu extends Module {
   val io = IO(new Bundle() {
     val DecEx = Input(new DecEx())
     val ExMem = Output(new ExMem())
-    val control = Input(UInt(5.W))
-    val aluSrc = Input(UInt(2.W))
   })
 
 
   // default value
-  val res = DontCare
-  val op1 = DontCare
-  val op2 = DontCare
-  val control = DontCare
+  val res = Wire(UInt(32.W))
+  val op1 = Wire(UInt(32.W))
+  val op2 = Wire(UInt(32.W))
+  res := DontCare
+  op1 := DontCare
+  op2 := DontCare
+  val aluOpcode = io.DecEx.aluOpcode
 
-  switch(io.aluSrc) {
-    is("b00".U) {
-      op1 := io.DecEx.regData1
-      op2 := io.DecEx.regData2
-    }
-    is("b01".U) {
-      op1 := io.DecEx.regData1
-      op2 := io.DecEx.imm
-    }
-    is("b11".U) {
-      op1 := io.DecEx.pc
-      op2 := io.DecEx.imm
-    }
-    is("b10".U) {
-      op1 := io.DecEx.pc
-      op2 := io.DecEx.regData2
-    }
-  }
+  op1 := Mux(io.DecEx.aluSrc(0),io.DecEx.pc,io.DecEx.regData1)
+  op2 := Mux(io.DecEx.aluSrc(1),io.DecEx.imm,io.DecEx.regData2)
 
   //ADD
-  switch (control) {
+  switch (aluOpcode) {
     is(ADD.id.U) {
       res := op1 + op2
    }
@@ -74,7 +59,9 @@ class Alu extends Module {
 
   io.ExMem.addr := res
   io.ExMem.pc := io.DecEx.pc
-  
+  io.ExMem.data := io.DecEx.regData2
+  io.ExMem.wrType := 0.U
+
 
 
 }
