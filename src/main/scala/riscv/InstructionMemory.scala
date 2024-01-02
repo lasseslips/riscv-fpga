@@ -18,7 +18,7 @@ class InstructionMemory(pathToBin: String = "") extends Module {
   loadMemoryFromFile(mem,pathToBin)
 
   when(io.write) {
-    mem.write((io.addr / 4.U),io.dataIn)
+    mem.write(((io.addr + 4.U) / 4.U),io.dataIn)
   } .otherwise {
     io.dataOut := mem.read((io.addr / 4.U), true.B)
   }

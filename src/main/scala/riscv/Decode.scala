@@ -172,4 +172,14 @@ class Decode extends Module {
     }
   }
 
+            printf("%d\n", Types.R.id.U)
+            printf("%d\n", Types.I.id.U)
+            printf("%d\n", Types.S.id.U)
+            printf("%d\n", Types.B.id.U)
+            printf("%d\n", Types.U.id.U)
+            printf("%d\n", Types.J.id.U)
+            printf("%d\n", Types.LOAD.id.U)
+            printf("%d\n", Types.ECALL.id.U)
+            printf("\n")
+
 }
