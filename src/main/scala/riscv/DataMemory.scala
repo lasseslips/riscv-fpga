@@ -4,19 +4,26 @@ import chisel3._
 import chisel3.util._
 class DataMemory extends Module {
   val io = IO(new Bundle() {
-    val addr = Input(UInt(20.W))
+    val ExMem = Input(new ExMem())
     val write = Input(Bool())
-    val dataIn = Input(UInt(32.W))
     val dataOut = Output(UInt(32.W))
-    val insType = Input(UInt(3.W))
+    val MemWb = Output(new MemWb())
   })
 
-  io.dataOut := DontCare
+  val dataOut = DontCare
+  val dataIn = Wire(UInt(32.W))
+  val wrType = Wire(UInt(3.W))
+  val addr = Wire(UInt(32.W))
+
+  wrType := io.ExMem.wrType
+  dataIn := io.ExMem.data
+  addr := io.ExMem.addr
+
   val dataInVec = Wire(Vec(4, UInt(8.W)))
-  dataInVec(0) := io.dataIn(7,0)
-  dataInVec(1) := io.dataIn(15,8)
-  dataInVec(2) := io.dataIn(23,16)
-  dataInVec(3) := io.dataIn(31,24)
+  dataInVec(0) := dataIn(7,0)
+  dataInVec(1) := dataIn(15,8)
+  dataInVec(2) := dataIn(23,16)
+  dataInVec(3) := dataIn(31,24)
   val dataOutVec = Wire(Vec(4,UInt(8.W)))
 
   val mask = Wire(Vec(4, Bool()))
@@ -25,7 +32,7 @@ class DataMemory extends Module {
   signBit := DontCare
 
 
-  switch(io.insType) {
+  switch(wrType) {
     is(LoadStoreFunct.LB_SB.U) {
       mask(0) := true.B
       mask(1) := false.B
@@ -60,11 +67,10 @@ class DataMemory extends Module {
   // 1,048,576 x 32 bit = 32Mb
   val mem = SyncReadMem(Math.pow(2, 10).toInt, Vec(4, UInt(8.W)), SyncReadMem.WriteFirst)
 
-  io.dataOut := DontCare
   when(io.write) {
-    mem.write(io.addr,dataInVec,mask)
+    mem.write(addr,dataInVec,mask)
   }
-  val data = mem.read(io.addr)
+  val data = mem.read(addr)
 
   for (i <- 0 until 4) {
     when(mask(i)) {
@@ -74,26 +80,31 @@ class DataMemory extends Module {
     }
   }
 
-  switch(io.insType) {
+  switch(wrType) {
     is(LoadStoreFunct.LB_SB.U) {
       signBit := dataOutVec(0)(7)
-      io.dataOut := Cat(Fill(24,signBit), dataOutVec(0))
+      dataOut := Cat(Fill(24,signBit), dataOutVec(0))
     }
     is(LoadStoreFunct.LH_SH.U) {
       signBit := dataOutVec(1)(7)
-      io.dataOut := Cat(Fill(16,signBit), dataOutVec(1),dataOutVec(0))
+      dataOut := Cat(Fill(16,signBit), dataOutVec(1),dataOutVec(0))
     }
     is(LoadStoreFunct.LW_SW.U) {
-      io.dataOut := Cat(dataOutVec)
+      dataOut := Cat(dataOutVec)
     }
     is(LoadStoreFunct.LBU.U) {
       signBit := false.B
-      io.dataOut := Cat(Fill(24,signBit),dataOutVec(0))
+      dataOut := Cat(Fill(24,signBit),dataOutVec(0))
     }
     is(LoadStoreFunct.LHU.U) {
       signBit := false.B
-      io.dataOut := Cat(Fill(16,signBit), dataOutVec(1),dataOutVec(0))
+      dataOut := Cat(Fill(16,signBit), dataOutVec(1),dataOutVec(0))
     }
   }
+
+  io.MemWb.alu := dataIn
+  io.MemWb.mem := dataOut
+  io.MemWb.pc := io.ExMem.pc
+
 
 }

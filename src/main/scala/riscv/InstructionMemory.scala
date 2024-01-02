@@ -5,23 +5,16 @@ import chisel3.util._
 import chisel3.util.experimental.loadMemoryFromFile
 class InstructionMemory(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
-    val addr = Input(UInt(16.W))
-    val dataOut = Output(UInt(32.W))
-    val dataIn = Input(UInt(32.W))
-    val write = Input(Bool())
+    val FeDec = Output(new FeDec())
+    val pc = Input(UInt(16.W))
   })
 
 
-  io.dataOut := DontCare
+  io.FeDec.instruction := DontCare
   // 262kB
   val mem = SyncReadMem(Math.pow(2,16).toInt,UInt(32.W))
   loadMemoryFromFile(mem,pathToBin)
-
-  when(io.write) {
-    mem.write(((io.addr + 4.U) / 4.U),io.dataIn)
-  } .otherwise {
-    io.dataOut := mem.read((io.addr / 4.U), true.B)
-  }
+  io.FeDec.instruction := mem.read((io.pc / 4.U), true.B)
 }
 
 

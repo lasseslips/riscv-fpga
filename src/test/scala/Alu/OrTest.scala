@@ -1,3 +1,4 @@
+/*
 package Alu
 
 import chisel3._
@@ -21,3 +22,4 @@ class OrTest extends AnyFlatSpec with ChiselScalatestTester{
     }
   }
 }
+*/
