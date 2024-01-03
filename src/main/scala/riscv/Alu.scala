@@ -82,6 +82,7 @@ class Alu extends Module {
   io.ExMem.memWrite := io.DecEx.memWrite
   io.ExMem.memIns := io.DecEx.memIns
   io.ExMem.regWrIdx := io.DecEx.regWrIdx
+  io.ExMem.regWriteSrc := io.DecEx.regWriteSrc
 
 
   

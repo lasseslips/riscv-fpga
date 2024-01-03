@@ -109,6 +109,7 @@ class DataMemory extends Module {
   io.MemWb.pc := io.ExMem.pc
   io.MemWb.regWrIdx := io.ExMem.regWrIdx
   io.MemWb.regWrite := io.ExMem.regWrite
+  io.MemWb.regWriteSrc := io.ExMem.regWriteSrc
 
 
 

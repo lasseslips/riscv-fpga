@@ -5,20 +5,22 @@ import chisel3.util._
 class WriteBack extends Module {
   val io = IO(new Bundle() {
     val MemWb = Input(new MemWb())
-    val regSrc = Input(UInt(2.W))
-    val wrData = Output(UInt(32.W))
+    val WbDec = Output(new WbDec())
   })
+  io.WbDec.wrData := DontCare
 
-  switch(io.regSrc) {
+  switch(io.MemWb.regWriteSrc) {
     is(RegWriteSrc.ALU.id.U) {
-      io.wrData := io.MemWb.alu
+      io.WbDec.wrData := io.MemWb.alu
     }
     is(RegWriteSrc.MEMORY.id.U) {
-      io.wrData := io.MemWb.mem
+      io.WbDec.wrData := io.MemWb.mem
     }
     is(RegWriteSrc.PC.id.U) {
-      io.wrData := io.MemWb.pc + 4.U
+      io.WbDec.wrData := io.MemWb.pc + 4.U
     }
   }
 
+  io.WbDec.regWrIdx := io.MemWb.regWrIdx
+  io.WbDec.regWrite := io.MemWb.regWrite
 }

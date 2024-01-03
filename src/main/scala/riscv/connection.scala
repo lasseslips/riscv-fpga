@@ -35,6 +35,7 @@ class ExMem extends Bundle {
   val memIns = UInt(3.W)
 
   val regWrIdx = UInt(4.W)
+  val regWriteSrc = UInt(2.W)
 }
 
 class MemWb extends Bundle {
@@ -43,6 +44,12 @@ class MemWb extends Bundle {
   val pc = UInt(32.W)
   
   val regWrite = Bool()
-
   val regWrIdx = UInt(4.W)
+  val regWriteSrc = UInt(2.W)
+}
+
+class WbDec extends Bundle {
+  val wrData = UInt(32.W)
+  val regWrIdx = UInt(4.W)
+  val regWrite = Bool()
 }
