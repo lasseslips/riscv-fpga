@@ -60,7 +60,14 @@ class Alu extends Module {
   io.ExMem.addr := res
   io.ExMem.pc := io.DecEx.pc
   io.ExMem.data := io.DecEx.regData2
-  io.ExMem.wrType := 0.U
+
+  io.ExMem.regWrite := io.DecEx.regWrite
+  io.ExMem.memWrite := io.DecEx.memWrite
+  io.ExMem.memIns := io.DecEx.memIns
+  io.ExMem.regWrIdx := io.DecEx.regWrIdx
+
+
+  
 
 
 

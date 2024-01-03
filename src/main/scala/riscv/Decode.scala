@@ -9,6 +9,11 @@ class Decode extends Module {
     val DecEx = Output(new DecEx())
     val aluOp = Output(UInt(6.W))
     val types = Output(UInt(5.W))
+    val MemWb = Input(new MemWb())
+    val dataIn = Input(UInt(32.W))
+    //Debug
+    val rs1Idx = Output(UInt(5.W))
+    val rs2Idx = Output(UInt(5.W))
   })
   val insOpcode = io.FeDec.instruction(6, 0)
 
@@ -17,11 +22,20 @@ class Decode extends Module {
   val rs1Idx = io.FeDec.instruction(19, 15)
   val rs2Idx = io.FeDec.instruction(24, 20)
   val wrIdx = io.FeDec.instruction(11, 7)
-  val imm = DontCare
+  val imm = Wire(UInt(32.W))
   val types = Wire(UInt(6.W))
   val aluOp = Wire(UInt(5.W))
   types := DontCare
   aluOp := DontCare
+  imm := DontCare
+  io.rs1Idx := rs1Idx
+  io.rs2Idx := rs2Idx
+  io.aluOp := aluOp
+  io.types := types
+
+  val pipelinedWrIdx = Wire(UInt(5.W))
+  pipelinedWrIdx := io.MemWb.regWrIdx
+
 
   switch(insOpcode) {
     is(Opcode.Alu.U) {
@@ -128,12 +142,12 @@ class Decode extends Module {
     is(Opcode.Lui.U) {
       types := Types.U.id.U
       imm := Cat(io.FeDec.instruction(31, 12), "b0".U(12.W))
-      aluOp := insType.LUI.U
+      aluOp := 33.U//insType.LUI.U
     }
     is(Opcode.AuiPc.U) {
       types := Types.U.id.U
       imm := Cat(io.FeDec.instruction(31, 12), "b0".U(12.W))
-      aluOp := insType.AUIPC.U
+      aluOp := 34.U//insType.AUIPC.U
     }
     is(Opcode.Jal.U) {
       types := Types.J.id.U
@@ -142,7 +156,7 @@ class Decode extends Module {
       val imm11 = io.FeDec.instruction(20)
       val imm10_1 = io.FeDec.instruction(30, 21)
       imm := Cat(Fill(12, imm20), imm20, imm19_12, imm11, imm10_1, 0.U)
-      aluOp := insType.JAL.U
+      aluOp := Opcode.Jal.U
     }
     is(Opcode.JalR.U) {
       types := Types.J.id.U
@@ -150,19 +164,19 @@ class Decode extends Module {
       val slice = io.FeDec.instruction(31, 20)
       val signBit = slice(11)
       imm := Cat(Fill(20, signBit), slice)
-      aluOp := insType.JALR.U
+      aluOp := Opcode.JalR.U
     }
     is(Opcode.Fence.U) {
       //TODO
-      aluOp := insType.FENCE.U
+      aluOp := Opcode.Fence.U
     }
     is(Opcode.ECall.U) {
       types := Types.ECALL.id.U
       val isEBreak = io.FeDec.instruction(20)
       when(isEBreak === 1.U) {
-        aluOp := insType.EBREAK.U
+        aluOp := Opcode.ECall.U
       }.otherwise {
-        aluOp := insType.ECALL.U
+        aluOp := Opcode.ECall.U
       }
     }
 
@@ -170,25 +184,13 @@ class Decode extends Module {
 
   }
 
-            printf("%d\n", Types.R.id.U)
-            printf("%d\n", Types.I.id.U)
-            printf("%d\n", Types.S.id.U)
-            printf("%d\n", Types.B.id.U)
-            printf("%d\n", Types.U.id.U)
-            printf("%d\n", Types.J.id.U)
-            printf("%d\n", Types.LOAD.id.U)
-            printf("%d\n", Types.ECALL.id.U)
-            printf("\n")
-  
-
-
-
-
   //REGISTER FILE
-  val reg1 = DontCare
-  val reg2 = DontCare
-  val regWrite = false.B
-  val dataIn = DontCare
+  val reg1 = Wire(UInt(32.W))
+  val reg2 = Wire(UInt(32.W))
+  val regWrite = Wire(Bool())
+  val dataIn = Wire(UInt(32.W))
+  dataIn := io.dataIn
+  regWrite := io.MemWb.regWrite
 
   val registers = RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
   registers(0) := 0.U
@@ -198,7 +200,7 @@ class Decode extends Module {
 
 
   when(regWrite) {
-    registers(wrIdx) := dataIn
+    registers(pipelinedWrIdx) := dataIn
   }
 
   io.DecEx.imm := imm
@@ -221,6 +223,8 @@ class Decode extends Module {
   io.DecEx.branchType := control.io.branchType
   io.DecEx.jumpEnable := control.io.jumpEnable
 
+  io.DecEx.regWrIdx := wrIdx
+  io.DecEx.pc := io.FeDec.pc
 
   
 

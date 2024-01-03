@@ -5,19 +5,20 @@ import chisel3.util._
 class DataMemory extends Module {
   val io = IO(new Bundle() {
     val ExMem = Input(new ExMem())
-    val write = Input(Bool())
     val dataOut = Output(UInt(32.W))
     val MemWb = Output(new MemWb())
   })
 
   val dataOut = DontCare
   val dataIn = Wire(UInt(32.W))
-  val wrType = Wire(UInt(3.W))
+  val memIns = Wire(UInt(3.W))
   val addr = Wire(UInt(32.W))
+  val memWrite = Wire(Bool())
 
-  wrType := io.ExMem.wrType
+  memIns := io.ExMem.memIns
   dataIn := io.ExMem.data
   addr := io.ExMem.addr
+  memWrite := io.ExMem.memWrite
 
   val dataInVec = Wire(Vec(4, UInt(8.W)))
   dataInVec(0) := dataIn(7,0)
@@ -32,7 +33,7 @@ class DataMemory extends Module {
   signBit := DontCare
 
 
-  switch(wrType) {
+  switch(memIns) {
     is(LoadStoreFunct.LB_SB.U) {
       mask(0) := true.B
       mask(1) := false.B
@@ -67,7 +68,7 @@ class DataMemory extends Module {
   // 1,048,576 x 32 bit = 32Mb
   val mem = SyncReadMem(Math.pow(2, 10).toInt, Vec(4, UInt(8.W)), SyncReadMem.WriteFirst)
 
-  when(io.write) {
+  when(memWrite) {
     mem.write(addr,dataInVec,mask)
   }
   val data = mem.read(addr)
@@ -80,7 +81,7 @@ class DataMemory extends Module {
     }
   }
 
-  switch(wrType) {
+  switch(memIns) {
     is(LoadStoreFunct.LB_SB.U) {
       signBit := dataOutVec(0)(7)
       dataOut := Cat(Fill(24,signBit), dataOutVec(0))
@@ -105,6 +106,8 @@ class DataMemory extends Module {
   io.MemWb.alu := dataIn
   io.MemWb.mem := dataOut
   io.MemWb.pc := io.ExMem.pc
+  io.MemWb.regWrIdx := io.ExMem.regWrIdx
+
 
 
 }

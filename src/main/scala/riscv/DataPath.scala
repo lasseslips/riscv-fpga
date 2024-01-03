@@ -68,7 +68,6 @@ class DataPath(pathToBin: String = "") extends Module {
   jmp := branchControl.io.branching || control.io.jumpEnable
 
   //DataMemory
-  dataMemory.io.write := control.io.memWrite
 
 }
 
