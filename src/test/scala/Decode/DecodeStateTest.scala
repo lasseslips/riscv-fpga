@@ -7,7 +7,7 @@ import riscv.{AluFunct3, AluType, Decode, LoadStoreFunct, Opcode, RegWriteSrc, T
 
 
 class DecodeStateTest extends AnyFlatSpec with ChiselScalatestTester {
-  "DecodeTest" should "Pass" in {
+  "DecodeStageTest" should "Pass" in {
     test(new Decode) { dut =>
       //add
       dut.io.FeDec.instruction.poke("b00000000000000000000001010110011".U)

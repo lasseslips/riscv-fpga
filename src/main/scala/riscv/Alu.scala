@@ -8,6 +8,8 @@ class Alu extends Module {
   val io = IO(new Bundle() {
     val DecEx = Input(new DecEx())
     val ExMem = Output(new ExMem())
+    val jump = Output(Bool())
+    val aluRes = Output(UInt(32.W))
   })
 
 
@@ -57,6 +59,21 @@ class Alu extends Module {
     }
   }
 
+  val branch = Module(new Branch())
+
+  branch.io.rs1 := io.DecEx.regData1
+  branch.io.rs2 := io.DecEx.regData2
+  branch.io.branchEnable := io.DecEx.branchEnable
+  branch.io.branchType := io.DecEx.branchType
+
+  val jump = WireDefault(false.B)
+  io.jump := jump
+  jump := io.DecEx.jumpEnable || (branch.io.branching)
+
+
+
+
+  io.aluRes := res
   io.ExMem.addr := res
   io.ExMem.pc := io.DecEx.pc
   io.ExMem.data := io.DecEx.regData2
