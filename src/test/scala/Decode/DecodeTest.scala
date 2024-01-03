@@ -3,7 +3,7 @@ package Decode
 import chisel3._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
-import riscv.{AluFunct3, AluType, Decode, LoadStoreFunct, Types, Opcode}
+import riscv.{AluFunct3, AluType, Decode, LoadStoreFunct, Opcode, Types, insType}
 
 
 class DecodeTest extends AnyFlatSpec with ChiselScalatestTester{
@@ -14,241 +14,242 @@ class DecodeTest extends AnyFlatSpec with ChiselScalatestTester{
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(1.U)
-      dut.io.aluOp.expect(AluType.ADD.id.U)
+      dut.io.opcode.expect(AluType.ADD.id.U)
       //sub
       dut.io.FeDec.instruction.poke("b01000000001100010000000010110011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(3.U)
-      dut.io.aluOp.expect(AluType.SUB.id.U)
+      dut.io.opcode.expect(AluType.SUB.id.U)
 
       //sll
       dut.io.FeDec.instruction.poke("b00000000001100010001000010110011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(3.U)
-      dut.io.aluOp.expect(AluType.SLL.id.U)
+      dut.io.opcode.expect(AluType.SLL.id.U)
       //slt 
       dut.io.FeDec.instruction.poke("b00000000001100010010000010110011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(3.U)
-      dut.io.aluOp.expect(AluType.SLT.id.U)
+      dut.io.opcode.expect(AluType.SLT.id.U)
       //sltu
       dut.io.FeDec.instruction.poke("b00000000001100010011000010110011".U)
 
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(3.U)
-      dut.io.aluOp.expect(AluType.SLTU.id.U)
+      dut.io.opcode.expect(AluType.SLTU.id.U)
       //xor
       dut.io.FeDec.instruction.poke("b00000000001100010100000010110011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(3.U)
-      dut.io.aluOp.expect(AluType.XOR.id.U)
+      dut.io.opcode.expect(AluType.XOR.id.U)
       //srl
       dut.io.FeDec.instruction.poke("b00000000001100010101000010110011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(3.U)
-      dut.io.aluOp.expect(AluType.SRL.id.U)
+      dut.io.opcode.expect(AluType.SRL.id.U)
       //sra
       dut.io.FeDec.instruction.poke("b01000000001100010101000010110011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(3.U)
-      dut.io.aluOp.expect(AluType.SRA.id.U)
+      dut.io.opcode.expect(AluType.SRA.id.U)
       //or
       dut.io.FeDec.instruction.poke("b00000000001100010110000010110011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(3.U)
-      dut.io.aluOp.expect(AluType.OR.id.U)
+      dut.io.opcode.expect(AluType.OR.id.U)
       //and
       dut.io.FeDec.instruction.poke("b00000000001100010111000010110011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.rs2Idx.expect(3.U)
-      dut.io.aluOp.expect(AluType.AND.id.U)
+      dut.io.opcode.expect(AluType.AND.id.U)
       //addi
       dut.io.FeDec.instruction.poke("b00000000101000010000000010010011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(10.U)
 
-      dut.io.aluOp.expect(AluType.ADD.id.U)
+      dut.io.opcode.expect(AluType.ADD.id.U)
 
       //SLTI
       dut.io.FeDec.instruction.poke("b00000000001100010010000010010011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
-      dut.io.aluOp.expect(AluType.SLT.id.U)
+      dut.io.opcode.expect(AluType.SLT.id.U)
       //SLTIU
       dut.io.FeDec.instruction.poke("b00000000001100010011000010010011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
-      dut.io.aluOp.expect(AluType.SLTU.id.U)
+      dut.io.opcode.expect(AluType.SLTU.id.U)
       //XORI    
       dut.io.FeDec.instruction.poke("b00000000001100010100000010010011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
-      dut.io.aluOp.expect(AluType.XOR.id.U)
+      dut.io.opcode.expect(AluType.XOR.id.U)
       //ORI   
       dut.io.FeDec.instruction.poke("b00000000001100010110000010010011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
-      dut.io.aluOp.expect(AluType.OR.id.U)
+      dut.io.opcode.expect(AluType.OR.id.U)
       //ANDI
       dut.io.FeDec.instruction.poke("b00000000001100010111000010010011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
-      dut.io.aluOp.expect(AluType.AND.id.U)
+      dut.io.opcode.expect(AluType.AND.id.U)
       //SLLI
       dut.io.FeDec.instruction.poke("b00000000001100010001000010010011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
-      dut.io.aluOp.expect(AluType.SLL.id.U)
+      dut.io.opcode.expect(AluType.SLL.id.U)
       //SRLI
       dut.io.FeDec.instruction.poke("b00000000001100010101000010010011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
-      dut.io.aluOp.expect(AluType.SRL.id.U)
+      dut.io.opcode.expect(AluType.SRL.id.U)
       //SRAI
       dut.io.FeDec.instruction.poke("b01000000001100010101000010010011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
-      dut.io.aluOp.expect(AluType.SRA.id.U)
+      dut.io.opcode.expect(AluType.SRA.id.U)
       //BEQ
       dut.io.FeDec.instruction.poke("b00000000001000001000000101100011".U)
       dut.io.rs1Idx.expect(1.U)
       dut.io.rs2Idx.expect(2.U)
       dut.io.DecEx.imm.expect(2.U)
-      dut.io.aluOp.expect(0.U)
+      dut.io.opcode.expect(0.U)
       //BNE
       dut.io.FeDec.instruction.poke("b00000000001000001001000101100011".U)
       dut.io.rs1Idx.expect(1.U)
       dut.io.rs2Idx.expect(2.U)
       dut.io.DecEx.imm.expect(2.U)
-      dut.io.aluOp.expect(1.U)
+      dut.io.opcode.expect(1.U)
       //BLT
       dut.io.FeDec.instruction.poke("b00000000001000001100000101100011".U)
       dut.io.rs1Idx.expect(1.U)
       dut.io.rs2Idx.expect(2.U)
       dut.io.DecEx.imm.expect(2.U)
-      dut.io.aluOp.expect(4.U)
+      dut.io.opcode.expect(4.U)
       //BGE
       dut.io.FeDec.instruction.poke("b00000000111101110101011001100011".U)
       dut.io.rs1Idx.expect(14.U)
       dut.io.rs2Idx.expect(15.U)
       dut.io.DecEx.imm.expect(12.U)
-      dut.io.aluOp.expect(5.U)
+      dut.io.opcode.expect(5.U)
       //BLTU
       dut.io.FeDec.instruction.poke("b00000000001000001110000101100011".U)
       dut.io.rs1Idx.expect(1.U)
       dut.io.rs2Idx.expect(2.U)
       dut.io.DecEx.imm.expect(2.U)
-      dut.io.aluOp.expect(6.U)
+      dut.io.opcode.expect(6.U)
       //BGEU
       dut.io.FeDec.instruction.poke("b00000000001000001111000101100011".U)
       dut.io.rs1Idx.expect(1.U)
       dut.io.rs2Idx.expect(2.U)
       dut.io.DecEx.imm.expect(2.U)
-      dut.io.aluOp.expect(7.U)
+      dut.io.opcode.expect(7.U)
       //LB
       dut.io.FeDec.instruction.poke("b00000000001100010000000010000011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
       dut.io.types.expect(Types.LOAD.id.U)
-      dut.io.aluOp.expect(LoadStoreFunct.LB_SB)
+      dut.io.opcode.expect(LoadStoreFunct.LB_SB)
       //LH
       dut.io.FeDec.instruction.poke("b00000000001100010001000010000011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
       dut.io.types.expect(Types.LOAD.id.U)
-      dut.io.aluOp.expect(LoadStoreFunct.LH_SH)
+      dut.io.opcode.expect(LoadStoreFunct.LH_SH)
       //LW
       dut.io.FeDec.instruction.poke("b00000000001100010010000010000011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
       dut.io.types.expect(Types.LOAD.id.U)
-      dut.io.aluOp.expect(LoadStoreFunct.LW_SW)
+      dut.io.opcode.expect(LoadStoreFunct.LW_SW)
       //LBU
       dut.io.FeDec.instruction.poke("b00000000001100010100000010000011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
       dut.io.types.expect(Types.LOAD.id.U)
-      dut.io.aluOp.expect(LoadStoreFunct.LBU)
+      dut.io.opcode.expect(LoadStoreFunct.LBU)
       //LHU
       dut.io.FeDec.instruction.poke("b00000000001100010101000010000011".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
       dut.io.types.expect(Types.LOAD.id.U)
-      dut.io.aluOp.expect(LoadStoreFunct.LHU)
+      dut.io.opcode.expect(LoadStoreFunct.LHU)
       //SB
       dut.io.FeDec.instruction.poke("b00000000000100010000000110100011".U)
       dut.io.rs2Idx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
       dut.io.types.expect(Types.S.id.U)
-      dut.io.aluOp.expect(LoadStoreFunct.LB_SB)
+      dut.io.opcode.expect(LoadStoreFunct.LB_SB)
       //SH
       dut.io.FeDec.instruction.poke("b00000000000100010001000110100011".U)
       dut.io.rs2Idx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
       dut.io.types.expect(Types.S.id.U)
-      dut.io.aluOp.expect(LoadStoreFunct.LH_SH)
+      dut.io.opcode.expect(LoadStoreFunct.LH_SH)
       //SW
       dut.io.FeDec.instruction.poke("b00000000000100010010000110100011".U)
       dut.io.rs2Idx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
       dut.io.types.expect(Types.S.id.U)
-      dut.io.aluOp.expect(LoadStoreFunct.LW_SW)
+      dut.io.opcode.expect(LoadStoreFunct.LW_SW)
       //LUI
       dut.io.FeDec.instruction.poke("b00000000000000000010000010110111".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.DecEx.imm.expect((2 << 12).U)
-      dut.io.aluOp.expect(Opcode.Lui.U)
+      dut.io.types.expect(Types.U.id.U)
+      dut.io.opcode.expect(insType.LUI.U)
       //AUIPC
       dut.io.FeDec.instruction.poke("b00000000000000000010000010010111".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.DecEx.imm.expect((2 << 12).U)
-      dut.io.aluOp.expect(Opcode.AuiPc.U)
+      dut.io.opcode.expect(insType.AUIPC.U)
       //JAL
       dut.io.FeDec.instruction.poke("b00000000001000000000000011101111".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.DecEx.imm.expect(2.U)
-      dut.io.aluOp.expect(Opcode.Jal.U)
+      dut.io.opcode.expect(insType.JAL.U)
       //JALR
       dut.io.FeDec.instruction.poke("b00000000001100010000000011100111".U)
       dut.io.DecEx.regWrIdx.expect(1.U)
       dut.io.rs1Idx.expect(2.U)
       dut.io.DecEx.imm.expect(3.U)
-      dut.io.aluOp.expect(Opcode.JalR.U)
+      dut.io.opcode.expect(insType.JALR.U)
       //FENCE
       //TODO
       //ECALL
       dut.io.FeDec.instruction.poke("b00000000000000000000000001110011".U)
-      dut.io.aluOp.expect(Opcode.ECall.U)
+      dut.io.opcode.expect(insType.ECALL.U)
 
       //EBREAK
       dut.io.FeDec.instruction.poke("b00000000000100000000000001110011".U)
-      dut.io.aluOp.expect(Opcode.ECall.U)
+      dut.io.opcode.expect(insType.EBREAK.U)
       }
     }
 }
