@@ -5,15 +5,16 @@ import chisel3.util._
 class DataMemory extends Module {
   val io = IO(new Bundle() {
     val ExMem = Input(new ExMem())
-    val dataOut = Output(UInt(32.W))
     val MemWb = Output(new MemWb())
   })
 
-  val dataOut = DontCare
+  val dataOut = Wire(UInt(32.W))
   val dataIn = Wire(UInt(32.W))
   val memIns = Wire(UInt(3.W))
   val addr = Wire(UInt(32.W))
   val memWrite = Wire(Bool())
+
+  dataOut := DontCare
 
   memIns := io.ExMem.memIns
   dataIn := io.ExMem.data
@@ -91,7 +92,7 @@ class DataMemory extends Module {
       dataOut := Cat(Fill(16,signBit), dataOutVec(1),dataOutVec(0))
     }
     is(LoadStoreFunct.LW_SW.U) {
-      dataOut := Cat(dataOutVec)
+      dataOut := Cat(dataOutVec(3),dataOutVec(2),dataOutVec(1),dataOutVec(0))
     }
     is(LoadStoreFunct.LBU.U) {
       signBit := false.B
@@ -107,6 +108,7 @@ class DataMemory extends Module {
   io.MemWb.mem := dataOut
   io.MemWb.pc := io.ExMem.pc
   io.MemWb.regWrIdx := io.ExMem.regWrIdx
+  io.MemWb.regWrite := io.ExMem.regWrite
 
 
 
