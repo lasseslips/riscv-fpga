@@ -11,18 +11,17 @@ class InstructionMemory(pathToBin: String = "") extends Module {
 
 
   val pc = RegInit(0.U(32.W))
-  when(io.ExFe.jump) {
-    pc := io.ExFe.pc
-  } .otherwise {
-    pc := pc + 4.U
-  }
+
+  val nextPc = WireDefault(0.U(32.W))
+  nextPc := Mux(io.ExFe.jump, io.ExFe.pc + 4.U, pc + 4.U)
+  pc := nextPc
 
 
   io.FeDec.instruction := DontCare
   // 262kB
   val mem = SyncReadMem(Math.pow(2,16).toInt,UInt(32.W))
   loadMemoryFromFile(mem,pathToBin)
-  io.FeDec.instruction := mem.read((pc / 4.U), true.B)
+  io.FeDec.instruction := mem.read(((nextPc - 4.U) / 4.U), true.B)
 
   io.FeDec.pc := pc
 }

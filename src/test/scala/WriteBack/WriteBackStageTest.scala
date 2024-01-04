@@ -12,10 +12,13 @@ class WriteBackStageTest extends AnyFlatSpec with ChiselScalatestTester{
       dut.io.MemWb.mem.poke(2.U)
       dut.io.MemWb.pc.poke(3.U)
       dut.io.MemWb.regWriteSrc.poke(RegWriteSrc.ALU.id.U)
+      dut.clock.step()
       dut.io.WbDec.wrData.expect(1.U)
       dut.io.MemWb.regWriteSrc.poke(RegWriteSrc.MEMORY.id.U)
+      dut.clock.step()
       dut.io.WbDec.wrData.expect(2.U)
       dut.io.MemWb.regWriteSrc.poke(RegWriteSrc.PC.id.U)
+      dut.clock.step()
       dut.io.WbDec.wrData.expect((3+4).U)
     }
   }

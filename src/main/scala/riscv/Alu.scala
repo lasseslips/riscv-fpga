@@ -12,6 +12,8 @@ class Alu extends Module {
   })
 
 
+  val decExReg = RegNext(io.DecEx)
+
   // default value
   val res = Wire(UInt(32.W))
   val op1 = Wire(UInt(32.W))
@@ -19,10 +21,10 @@ class Alu extends Module {
   res := DontCare
   op1 := DontCare
   op2 := DontCare
-  val aluOpcode = io.DecEx.aluOpcode
+  val aluOpcode = decExReg.aluOpcode
 
-  op1 := Mux(io.DecEx.aluSrc(0),io.DecEx.pc,io.DecEx.regData1)
-  op2 := Mux(io.DecEx.aluSrc(1),io.DecEx.imm,io.DecEx.regData2)
+  op1 := Mux(decExReg.aluSrc(0),decExReg.pc,decExReg.regData1)
+  op2 := Mux(decExReg.aluSrc(1),decExReg.imm,decExReg.regData2)
 
   //ADD
   switch (aluOpcode) {
@@ -60,28 +62,28 @@ class Alu extends Module {
 
   val branch = Module(new Branch())
 
-  branch.io.rs1 := io.DecEx.regData1
-  branch.io.rs2 := io.DecEx.regData2
-  branch.io.branchEnable := io.DecEx.branchEnable
-  branch.io.branchType := io.DecEx.branchType
+  branch.io.rs1 := decExReg.regData1
+  branch.io.rs2 := decExReg.regData2
+  branch.io.branchEnable := decExReg.branchEnable
+  branch.io.branchType := decExReg.branchType
 
   val jump = WireDefault(false.B)
   io.ExFe.jump := jump
-  jump := io.DecEx.jumpEnable || (branch.io.branching)
+  jump := decExReg.jumpEnable || (branch.io.branching)
 
 
 
 
   io.ExFe.pc := res
   io.ExMem.addr := res
-  io.ExMem.pc := io.DecEx.pc
-  io.ExMem.data := io.DecEx.regData2
+  io.ExMem.pc := decExReg.pc
+  io.ExMem.data := decExReg.regData2
 
-  io.ExMem.regWrite := io.DecEx.regWrite
-  io.ExMem.memWrite := io.DecEx.memWrite
-  io.ExMem.memIns := io.DecEx.memIns
-  io.ExMem.regWrIdx := io.DecEx.regWrIdx
-  io.ExMem.regWriteSrc := io.DecEx.regWriteSrc
+  io.ExMem.regWrite := decExReg.regWrite
+  io.ExMem.memWrite := decExReg.memWrite
+  io.ExMem.memIns := decExReg.memIns
+  io.ExMem.regWrIdx := decExReg.regWrIdx
+  io.ExMem.regWriteSrc := decExReg.regWriteSrc
 
 
   

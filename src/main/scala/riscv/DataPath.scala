@@ -5,9 +5,14 @@ import chisel3.util._
 class DataPath(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
     //DEBUG
+
+
+    //DONT DELETE
+    val ins = Output(UInt(32.W))
+
   })
 
-  Util.convertBinToHex(pathToBin)
+  //Util.convertBinToHex(pathToBin)
 
   //Module loading
   val instructionMemory = Module(new InstructionMemory(pathToBin + ".hex"))
@@ -24,9 +29,14 @@ class DataPath(pathToBin: String = "") extends Module {
   dataMemory.io.MemWb <> writeBack.io.MemWb
   writeBack.io.WbDec <> decode.io.WbDec
 
+
+  //DONT DELETE
+  io.ins := instructionMemory.io.FeDec.instruction
+
+
 }
 
 object Main extends App {
   println("Generating RISC-V verilog")
-  emitVerilog(new DataPath("bin/addpos"), Array("--target-dir", "generated"))
+  emitVerilog(new DataPath("bin/addlarge"), Array("--target-dir", "generated"))
 }

@@ -7,20 +7,23 @@ class WriteBack extends Module {
     val MemWb = Input(new MemWb())
     val WbDec = Output(new WbDec())
   })
+
+  val memWbReg = RegNext(io.MemWb)
+
   io.WbDec.wrData := DontCare
 
-  switch(io.MemWb.regWriteSrc) {
+  switch(memWbReg.regWriteSrc) {
     is(RegWriteSrc.ALU.id.U) {
-      io.WbDec.wrData := io.MemWb.alu
+      io.WbDec.wrData := memWbReg.alu
     }
     is(RegWriteSrc.MEMORY.id.U) {
-      io.WbDec.wrData := io.MemWb.mem
+      io.WbDec.wrData := memWbReg.mem
     }
     is(RegWriteSrc.PC.id.U) {
-      io.WbDec.wrData := io.MemWb.pc + 4.U
+      io.WbDec.wrData := memWbReg.pc + 4.U
     }
   }
 
-  io.WbDec.regWrIdx := io.MemWb.regWrIdx
-  io.WbDec.regWrite := io.MemWb.regWrite
+  io.WbDec.regWrIdx := memWbReg.regWrIdx
+  io.WbDec.regWrite := memWbReg.regWrite
 }

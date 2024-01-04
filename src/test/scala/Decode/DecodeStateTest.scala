@@ -12,6 +12,7 @@ class DecodeStateTest extends AnyFlatSpec with ChiselScalatestTester {
       //add
       dut.io.FeDec.instruction.poke("b00000000000000000000001010110011".U)
       dut.io.FeDec.pc.poke(12.U)
+      dut.clock.step()
       dut.io.DecEx.pc.expect(12.U)
       dut.io.DecEx.regWrIdx.expect(5.U)
       dut.io.DecEx.regData1.expect(0.U)
@@ -27,6 +28,7 @@ class DecodeStateTest extends AnyFlatSpec with ChiselScalatestTester {
       //addi
       dut.io.FeDec.instruction.poke("b00000110010000000000001010010011".U)
       dut.io.FeDec.pc.poke(12.U)
+      dut.clock.step()
       dut.io.DecEx.pc.expect(12.U)
       dut.io.DecEx.regWrIdx.expect(5.U)
       dut.io.DecEx.regData1.expect(0.U)
@@ -42,6 +44,7 @@ class DecodeStateTest extends AnyFlatSpec with ChiselScalatestTester {
       //beq
       dut.io.FeDec.instruction.poke("b00000110000000000000001001100011".U)
       dut.io.FeDec.pc.poke(12.U)
+      dut.clock.step()
       dut.io.DecEx.pc.expect(12.U)
       dut.io.DecEx.regData1.expect(0.U)
       dut.io.DecEx.regData2.expect(0.U)
@@ -55,6 +58,7 @@ class DecodeStateTest extends AnyFlatSpec with ChiselScalatestTester {
       //lw
       dut.io.FeDec.instruction.poke("b00000110010000000010001010000011".U)
       dut.io.FeDec.pc.poke(12.U)
+      dut.clock.step()
       dut.io.DecEx.pc.expect(12.U)
       dut.io.DecEx.regData1.expect(0.U)
       dut.io.DecEx.regWrIdx.expect(5.U)
@@ -70,6 +74,7 @@ class DecodeStateTest extends AnyFlatSpec with ChiselScalatestTester {
       //sw
       dut.io.FeDec.instruction.poke("b00000110000000000010001000100011".U)
       dut.io.FeDec.pc.poke(12.U)
+      dut.clock.step()
       dut.io.DecEx.pc.expect(12.U)
       dut.io.DecEx.regData1.expect(0.U)
       dut.io.DecEx.regData2.expect(0.U)
@@ -87,6 +92,7 @@ class DecodeStateTest extends AnyFlatSpec with ChiselScalatestTester {
       //lui
       dut.io.FeDec.instruction.poke("b00000000000000000010001010110111".U)
       dut.io.FeDec.pc.poke(12.U)
+      dut.clock.step()
       dut.io.DecEx.pc.expect(12.U)
       dut.io.DecEx.regData1.expect(0.U)
       dut.io.DecEx.regWrIdx.expect(5.U)
@@ -103,6 +109,7 @@ class DecodeStateTest extends AnyFlatSpec with ChiselScalatestTester {
       //AUIPC
       dut.io.FeDec.instruction.poke("b00000000000000000010001010010111".U)
       dut.io.FeDec.pc.poke(12.U)
+      dut.clock.step()
       dut.io.DecEx.pc.expect(12.U)
       dut.io.DecEx.regWrIdx.expect(5.U)
       dut.io.DecEx.imm.expect((2 << 12).U)
@@ -118,6 +125,7 @@ class DecodeStateTest extends AnyFlatSpec with ChiselScalatestTester {
       //jal
       dut.io.FeDec.instruction.poke("b00000110010000000000001011101111".U)
       dut.io.FeDec.pc.poke(12.U)
+      dut.clock.step()
       dut.io.DecEx.pc.expect(12.U)
       dut.io.DecEx.regWrIdx.expect(5.U)
       dut.io.DecEx.imm.expect(100.U)
@@ -133,6 +141,7 @@ class DecodeStateTest extends AnyFlatSpec with ChiselScalatestTester {
       //jalr
       dut.io.FeDec.instruction.poke("b00000110010000000000001011100111".U)
       dut.io.FeDec.pc.poke(12.U)
+      dut.clock.step()
       dut.io.DecEx.pc.expect(12.U)
       dut.io.DecEx.regWrIdx.expect(5.U)
       dut.io.DecEx.imm.expect(100.U)
