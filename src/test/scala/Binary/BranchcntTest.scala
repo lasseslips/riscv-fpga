@@ -6,8 +6,8 @@ import riscv._
 
 class BranchcntTest extends AnyFlatSpec with ChiselScalatestTester{
     "BRANCHCNT" should "Pass" in {
-        test(new DataPath("bin/branchcnt")) { dut =>
-            dut.clock.step(50)
+        test(new DataPath("bin/branchTest")) { dut =>
+            dut.clock.step(100)
         }
     }
 }

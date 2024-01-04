@@ -23,6 +23,7 @@ class DecEx extends Bundle {
   val jumpEnable = Bool() //
 
   val regWrIdx = UInt(5.W)
+
 }
 
 class ExMem extends Bundle {
@@ -57,4 +58,76 @@ class WbDec extends Bundle {
 class ExFe extends Bundle {
   val pc = UInt(32.W)
   val jump = Bool()
+}
+
+object Zeroed {
+  def FeDec() = {
+    val bundle = Wire(new FeDec)
+    bundle.pc := 0.U
+    bundle.instruction := 0.U
+    bundle
+  }
+
+  def DecEx() = {
+    val bundle = Wire(new DecEx)
+    bundle.imm := 0.U
+    bundle.regData1 := 0.U
+    bundle.regData2 := 0.U
+    bundle.pc := 0.U
+
+    bundle.regWrite := false.B
+    bundle.memWrite := false.B
+    bundle.memIns := 0.U
+    bundle.regWriteSrc := 0.U
+    bundle.aluSrc := 0.U
+    bundle.aluOpcode := 0.U
+    bundle.branchEnable := false.B
+    bundle.branchType := 0.U
+    bundle.jumpEnable := false.B
+
+    bundle.regWrIdx := 0.U
+    bundle
+  }
+
+  def ExMem() = {
+    val bundle = Wire(new ExMem)
+    bundle.data := 0.U
+    bundle.addr := 0.U
+    bundle.pc := 0.U
+
+    bundle.regWrite := false.B
+    bundle.memWrite := false.B
+    bundle.memIns := 0.U
+
+    bundle.regWrIdx := 0.U
+    bundle.regWriteSrc := 0.U
+    bundle
+  }
+
+  def MemWb() = {
+    val bundle = Wire(new MemWb)
+    bundle.alu := 0.U
+    bundle.mem := 0.U
+    bundle.pc := 0.U
+
+    bundle.regWrite := false.B
+    bundle.regWrIdx := 0.U
+    bundle.regWriteSrc := 0.U
+    bundle
+  }
+
+  def WbDec() = {
+    val bundle = Wire(new WbDec)
+    bundle.wrData := 0.U
+    bundle.regWrIdx := 0.U
+    bundle.regWrite := false.B
+    bundle
+  }
+
+  def ExFe() = {
+    val bundle = Wire(new ExFe)
+    bundle.pc := 0.U
+    bundle.jump := false.B
+    bundle
+  }
 }

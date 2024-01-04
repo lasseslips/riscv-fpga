@@ -9,10 +9,16 @@ class Alu extends Module {
     val DecEx = Input(new DecEx())
     val ExMem = Output(new ExMem())
     val ExFe = Output(new ExFe())
+    val flush = Output(Bool())
   })
 
 
   val decExReg = RegNext(io.DecEx)
+  val flush = WireDefault(Bool(), false.B)
+  io.flush := flush
+  when(flush) {
+    decExReg := Zeroed.DecEx()
+  }
 
   // default value
   val res = Wire(UInt(32.W))
@@ -70,6 +76,7 @@ class Alu extends Module {
   val jump = WireDefault(false.B)
   io.ExFe.jump := jump
   jump := decExReg.jumpEnable || (branch.io.branching)
+  flush := jump
 
 
 

@@ -9,6 +9,7 @@ class Decode extends Module {
     val DecEx = Output(new DecEx())
     val WbDec = Input(new WbDec())
     val halt = Output(Bool())
+    val flush = Input(Bool())
     //Debug
     val opcode = Output(UInt(6.W))
     val types = Output(UInt(5.W))
@@ -19,7 +20,11 @@ class Decode extends Module {
 
   })
 
+
   val feDecReg = RegNext(io.FeDec)
+  when(io.flush) {
+    feDecReg := Zeroed.FeDec()
+  }
 
   val insOpcode = feDecReg.instruction(6, 0)
 

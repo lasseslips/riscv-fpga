@@ -30,6 +30,7 @@ class DataPath(pathToBin: String = "") extends Module {
   alu.io.ExMem <> dataMemory.io.ExMem
   dataMemory.io.MemWb <> writeBack.io.MemWb
   writeBack.io.WbDec <> decode.io.WbDec
+  decode.io.flush := alu.io.flush
 
   instructionMemory.io.halt := false.B
   val haltReg = RegInit(Bool(),false.B)
