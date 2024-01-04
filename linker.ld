@@ -1,3 +1,3 @@
 SECTIONS {
-.text:{*(*)}
+.text :{*(*)}
 }
