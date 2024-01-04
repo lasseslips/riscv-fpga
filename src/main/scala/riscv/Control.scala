@@ -16,6 +16,7 @@ class Control extends Module {
     val branchEnable = Output(Bool())
     val branchType = Output(UInt(3.W))
     val jumpEnable = Output(Bool())
+    val halt = Output(Bool())
   })
 
   io.memWrite := false.B
@@ -27,6 +28,8 @@ class Control extends Module {
   io.branchEnable := false.B
   io.branchType := DontCare
   io.memIns := DontCare
+  val halt = WireInit(Bool(),false.B)
+  io.halt := halt
 
   switch(io.types) {
     is(Types.R.id.U) {
@@ -86,6 +89,7 @@ class Control extends Module {
       io.jumpEnable := true.B
     }
     is(Types.ECALL.id.U) {
+      halt := true.B
       //TODO ECALL AND EBREAK
     }
   }

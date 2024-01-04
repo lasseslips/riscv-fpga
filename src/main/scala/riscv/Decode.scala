@@ -8,11 +8,15 @@ class Decode extends Module {
     val FeDec = Input(new FeDec())
     val DecEx = Output(new DecEx())
     val WbDec = Input(new WbDec())
+    val halt = Output(Bool())
     //Debug
     val opcode = Output(UInt(6.W))
     val types = Output(UInt(5.W))
     val rs1Idx = Output(UInt(5.W))
     val rs2Idx = Output(UInt(5.W))
+
+    val registers = Output(Vec(32,UInt(32.W)))
+
   })
 
   val feDecReg = RegNext(io.FeDec)
@@ -204,6 +208,13 @@ class Decode extends Module {
   when(regWrite) {
     registers(pipelinedWrIdx) := dataIn
   }
+  //may need to be removed, in ripes the data flows through the registers in 0 cycles.
+  when(regWrite && (pipelinedWrIdx === rs1Idx)) {
+    reg1 := dataIn
+  }
+  when(regWrite && (pipelinedWrIdx === rs2Idx)) {
+    reg2 := dataIn
+  }
 
   io.DecEx.imm := imm
   io.DecEx.regData1 := reg1
@@ -224,9 +235,12 @@ class Decode extends Module {
   io.DecEx.branchEnable := control.io.branchEnable
   io.DecEx.branchType := control.io.branchType
   io.DecEx.jumpEnable := control.io.jumpEnable
+  io.halt := control.io.halt
 
   io.DecEx.regWrIdx := wrIdx
   io.DecEx.pc := feDecReg.pc
+
+  io.registers := registers
 
   
 

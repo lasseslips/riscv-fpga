@@ -20,5 +20,24 @@ object Util {
         }
         pw.close()
     }
+    def readBin(path: String): Array[Int] = {
+        val bytes = Files.readAllBytes(Paths.get(path + ".bin"))
 
+        val arr = new Array[Int](math.max(1, bytes.length / 4))
+        if (bytes.isEmpty) {
+            arr(0)
+        }
+        for (i <- 0 until bytes.length / 4) {
+            var word = 0
+            for (j <- 0 until 4) {
+                word >>>= 8
+                word += (bytes(i * 4 + j).toInt & 0xff) << 24
+            }
+            // printf("%08x\n", word)
+            arr(i) = word
+        }
+
+
+        arr
+    }
 }

@@ -16,7 +16,7 @@ class DataMemory extends Module {
 
   class ControlReg extends Bundle {
     val regWrite = Bool()
-    val regWrIdx = UInt(4.W)
+    val regWrIdx = UInt(5.W)
     val regWriteSrc = UInt(2.W)
     val pc = UInt(32.W)
   }
@@ -117,7 +117,8 @@ class DataMemory extends Module {
     }
   }
 
-  io.MemWb.alu := dataIn
+  val aluReg = RegNext(addr)
+  io.MemWb.alu := aluReg
   io.MemWb.mem := dataOut
   io.MemWb.pc := controlReg.pc
   io.MemWb.regWrIdx := controlReg.regWrIdx

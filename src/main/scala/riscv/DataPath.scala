@@ -5,6 +5,7 @@ import chisel3.util._
 class DataPath(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
     //DEBUG
+    val registers = Output(Vec(32, UInt(32.W)))
 
 
     //DONT DELETE
@@ -13,9 +14,10 @@ class DataPath(pathToBin: String = "") extends Module {
   })
 
   //Util.convertBinToHex(pathToBin)
+  val code = Util.readBin(pathToBin)
 
   //Module loading
-  val instructionMemory = Module(new InstructionMemory(pathToBin + ".hex"))
+  val instructionMemory = Module(new InstructionMemory(code))
   val decode = Module(new Decode())
   val alu = Module(new Alu())
   val dataMemory = Module(new DataMemory())
@@ -29,10 +31,20 @@ class DataPath(pathToBin: String = "") extends Module {
   dataMemory.io.MemWb <> writeBack.io.MemWb
   writeBack.io.WbDec <> decode.io.WbDec
 
+  instructionMemory.io.halt := false.B
+  val haltReg = RegInit(Bool(),false.B)
+  when(decode.io.halt || haltReg) {
+    haltReg := true.B
+    instructionMemory.io.halt := true.B
+  }
+
 
   //DONT DELETE
   io.ins := instructionMemory.io.FeDec.instruction
 
+
+  //Debug
+  io.registers := decode.io.registers
 
 }
 

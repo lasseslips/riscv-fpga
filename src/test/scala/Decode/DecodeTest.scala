@@ -81,10 +81,10 @@ class DecodeTest extends AnyFlatSpec with ChiselScalatestTester{
       dut.io.rs2Idx.expect(3.U)
       dut.io.opcode.expect(AluType.AND.id.U)
       //addi
-      dut.io.FeDec.instruction.poke("b00000000101000010000000010010011".U)
+      dut.io.FeDec.instruction.poke("h00a00893".U)
       dut.clock.step()
-      dut.io.DecEx.regWrIdx.expect(1.U)
-      dut.io.rs1Idx.expect(2.U)
+      dut.io.DecEx.regWrIdx.expect(17.U)
+      dut.io.rs1Idx.expect(0.U)
       dut.io.DecEx.imm.expect(10.U)
 
       dut.io.opcode.expect(AluType.ADD.id.U)

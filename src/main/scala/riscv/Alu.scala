@@ -23,8 +23,8 @@ class Alu extends Module {
   op2 := DontCare
   val aluOpcode = decExReg.aluOpcode
 
-  op1 := Mux(decExReg.aluSrc(0),decExReg.pc,decExReg.regData1)
-  op2 := Mux(decExReg.aluSrc(1),decExReg.imm,decExReg.regData2)
+  op1 := Mux(decExReg.aluSrc(1),decExReg.pc,decExReg.regData1)
+  op2 := Mux(decExReg.aluSrc(0),decExReg.imm,decExReg.regData2)
 
   //ADD
   switch (aluOpcode) {

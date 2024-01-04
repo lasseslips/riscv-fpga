@@ -22,7 +22,7 @@ class DecEx extends Bundle {
   val branchType = UInt(3.W) //
   val jumpEnable = Bool() //
 
-  val regWrIdx = UInt(4.W)
+  val regWrIdx = UInt(5.W)
 }
 
 class ExMem extends Bundle {
@@ -34,7 +34,7 @@ class ExMem extends Bundle {
   val memWrite = Bool()
   val memIns = UInt(3.W)
 
-  val regWrIdx = UInt(4.W)
+  val regWrIdx = UInt(5.W)
   val regWriteSrc = UInt(2.W)
 }
 
@@ -44,13 +44,13 @@ class MemWb extends Bundle {
   val pc = UInt(32.W)
   
   val regWrite = Bool()
-  val regWrIdx = UInt(4.W)
+  val regWrIdx = UInt(5.W)
   val regWriteSrc = UInt(2.W)
 }
 
 class WbDec extends Bundle {
   val wrData = UInt(32.W)
-  val regWrIdx = UInt(4.W)
+  val regWrIdx = UInt(5.W)
   val regWrite = Bool()
 }
 
