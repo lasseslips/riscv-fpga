@@ -53,3 +53,8 @@ class WbDec extends Bundle {
   val regWrIdx = UInt(4.W)
   val regWrite = Bool()
 }
+
+class ExFe extends Bundle {
+  val pc = UInt(32.W)
+  val jump = Bool()
+}

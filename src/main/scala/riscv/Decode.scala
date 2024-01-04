@@ -7,11 +7,12 @@ class Decode extends Module {
   val io = IO(new Bundle() {
     val FeDec = Input(new FeDec())
     val DecEx = Output(new DecEx())
+    val WbDec = Input(new WbDec())
+    //Debug
     val opcode = Output(UInt(6.W))
     val types = Output(UInt(5.W))
     val MemWb = Input(new MemWb())
     val dataIn = Input(UInt(32.W))
-    //Debug
     val rs1Idx = Output(UInt(5.W))
     val rs2Idx = Output(UInt(5.W))
   })
@@ -33,8 +34,6 @@ class Decode extends Module {
   io.opcode := opcode
   io.types := types
 
-  val pipelinedWrIdx = Wire(UInt(5.W))
-  pipelinedWrIdx := io.MemWb.regWrIdx
 
   switch(insOpcode) {
     is(Opcode.Alu.U) {
@@ -188,8 +187,11 @@ class Decode extends Module {
   val reg2 = Wire(UInt(32.W))
   val regWrite = Wire(Bool())
   val dataIn = Wire(UInt(32.W))
-  dataIn := io.dataIn
-  regWrite := io.MemWb.regWrite
+  val pipelinedWrIdx = Wire(UInt(5.W))
+  dataIn := io.WbDec.wrData
+  regWrite := io.WbDec.regWrite
+  pipelinedWrIdx := io.WbDec.regWrIdx
+
 
   val registers = RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
   registers(0) := 0.U

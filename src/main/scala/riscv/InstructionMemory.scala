@@ -6,15 +6,25 @@ import chisel3.util.experimental.loadMemoryFromFile
 class InstructionMemory(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
     val FeDec = Output(new FeDec())
-    val pc = Input(UInt(16.W))
+    val ExFe = Input(new ExFe())
   })
+
+
+  val pc = RegInit(0.U(32.W))
+  when(io.ExFe.jump) {
+    pc := io.ExFe.pc
+  } .otherwise {
+    pc := pc + 4.U
+  }
 
 
   io.FeDec.instruction := DontCare
   // 262kB
   val mem = SyncReadMem(Math.pow(2,16).toInt,UInt(32.W))
   loadMemoryFromFile(mem,pathToBin)
-  io.FeDec.instruction := mem.read((io.pc / 4.U), true.B)
+  io.FeDec.instruction := mem.read((pc / 4.U), true.B)
+
+  io.FeDec.pc := pc
 }
 
 
