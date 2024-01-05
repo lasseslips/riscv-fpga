@@ -22,9 +22,11 @@ class Decode extends Module {
 
 
   val feDecReg = RegNext(io.FeDec)
-  when(io.flush) {
+  /*when(io.flush) {
     feDecReg := Zeroed.FeDec()
   }
+
+   */
 
   val insOpcode = feDecReg.instruction(6, 0)
 
@@ -187,6 +189,11 @@ class Decode extends Module {
         opcode := insType.ECALL.U
       }
     }
+    is(0.U) {
+      //nop
+      types := Types.R.id.U
+      opcode := AluType.ADD.id.U
+    }
 
   
 
@@ -214,10 +221,10 @@ class Decode extends Module {
     registers(pipelinedWrIdx) := dataIn
   }
   //may need to be removed, in ripes the data flows through the registers in 0 cycles.
-  when(regWrite && (pipelinedWrIdx === rs1Idx)) {
+  when(regWrite && (pipelinedWrIdx === rs1Idx) && (pipelinedWrIdx =/= 0.U)) {
     reg1 := dataIn
   }
-  when(regWrite && (pipelinedWrIdx === rs2Idx)) {
+  when(regWrite && (pipelinedWrIdx === rs2Idx) && (pipelinedWrIdx =/= 0.U)) {
     reg2 := dataIn
   }
 
