@@ -11,6 +11,6 @@ asmLinux:
 	riscv64-linux-gnu-gcc -nostartfiles -nostdlib -march=rv32i -mabi=ilp32 -T linker.ld bin/${filename}.s -o bin/${filename}.out
 	riscv64-linux-gnu-objcopy -O binary bin/${filename}.out bin/${filename}.bin
 
-asmLinux:
+cLinux:
 	riscv64-linux-gnu-gcc -nostartfiles -nostdlib -march=rv32i -mabi=ilp32 -T linker.ld bin/${filename}.c -o bin/${filename}.out
 	riscv64-linux-gnu-objcopy -O binary bin/${filename}.out bin/${filename}.bin
