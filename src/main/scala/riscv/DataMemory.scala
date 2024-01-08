@@ -13,6 +13,7 @@ class DataMemory extends Module {
   val memIns = Wire(UInt(3.W))
   val addr = Wire(UInt(32.W))
   val memWrite = Wire(Bool())
+  val data = Wire(Vec(4, UInt(8.W)))
 
   class ControlReg extends Bundle {
     val regWrite = Bool()
@@ -27,19 +28,20 @@ class DataMemory extends Module {
   controlRegValues.pc := io.ExMem.pc
   val controlReg = RegNext(controlRegValues)
 
+
   dataOut := DontCare
 
   memIns := io.ExMem.memIns
   dataIn := io.ExMem.data
   addr := io.ExMem.addr
   memWrite := io.ExMem.memWrite
+  val memInsReg = RegNext(memIns)
 
   val dataInVec = Wire(Vec(4, UInt(8.W)))
   dataInVec(0) := dataIn(7,0)
   dataInVec(1) := dataIn(15,8)
   dataInVec(2) := dataIn(23,16)
   dataInVec(3) := dataIn(31,24)
-  val dataOutVec = Wire(Vec(4,UInt(8.W)))
 
   val mask = Wire(Vec(4, Bool()))
   mask := DontCare
@@ -85,35 +87,30 @@ class DataMemory extends Module {
   when(memWrite) {
     mem.write(addr,dataInVec,mask)
   }
-  val data = mem.read(addr)
+  data := mem.read(addr)
 
-  for (i <- 0 until 4) {
-    when(mask(i)) {
-      dataOutVec(i) := data(i)
-    } .otherwise {
-      dataOutVec(i) := 0.U
-    }
-  }
 
-  switch(memIns) {
+  //sw 00 00 00 a5 is stored as a negative number.
+
+  switch(memInsReg) {
     is(LoadStoreFunct.LB_SB.U) {
-      signBit := dataOutVec(0)(7)
-      dataOut := Cat(Fill(24,signBit), dataOutVec(0))
+      signBit := data(0)(7)
+      dataOut := Cat(Fill(24,signBit), data(0))
     }
     is(LoadStoreFunct.LH_SH.U) {
-      signBit := dataOutVec(1)(7)
-      dataOut := Cat(Fill(16,signBit), dataOutVec(1),dataOutVec(0))
+      signBit := data(1)(7)
+      dataOut := Cat(Fill(16,signBit), data(1),data(0))
     }
     is(LoadStoreFunct.LW_SW.U) {
-      dataOut := Cat(dataOutVec(3),dataOutVec(2),dataOutVec(1),dataOutVec(0))
+      dataOut := Cat(data(3),data(2),data(1),data(0))
     }
     is(LoadStoreFunct.LBU.U) {
       signBit := false.B
-      dataOut := Cat(Fill(24,signBit),dataOutVec(0))
+      dataOut := Cat(Fill(24,signBit),data(0))
     }
     is(LoadStoreFunct.LHU.U) {
       signBit := false.B
-      dataOut := Cat(Fill(16,signBit), dataOutVec(1),dataOutVec(0))
+      dataOut := Cat(Fill(16,signBit), data(1),data(0))
     }
   }
 
