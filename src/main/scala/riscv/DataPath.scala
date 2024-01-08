@@ -5,7 +5,7 @@ import chisel3.util._
 class DataPath(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
     //DEBUG
-    //val registers = Output(Vec(32, UInt(32.W)))
+    val registers = Output(Vec(32, UInt(32.W)))
     val reg12_0 = Output(UInt(1.W))
     val test = Output(Bool())
 
@@ -58,7 +58,7 @@ class DataPath(pathToBin: String = "") extends Module {
 
 
   //Debug
-  //io.registers := decode.io.registers
+  io.registers := decode.io.registers
   val slice = Wire(UInt(32.W))
   slice := decode.io.registers(12)
   io.reg12_0 := slice(0)

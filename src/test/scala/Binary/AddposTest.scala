@@ -9,9 +9,9 @@ class AddposTest extends AnyFlatSpec with ChiselScalatestTester{
         test(new DataPath("bin/addpos")) { dut =>
           dut.clock.step(50)
           dut.io.registers(10).expect(5.U)
-            dut.io.registers(11).expect(6.U)
-            dut.io.registers(12).expect(0.U)
-            dut.io.registers(17).expect(10.U)
+          dut.io.registers(11).expect(6.U)
+          dut.io.registers(12).expect(0.U)
+          dut.io.registers(17).expect(10.U)
         }
     }
 }
