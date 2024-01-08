@@ -12,4 +12,5 @@
 	lhu a5, 1(t1)
 	lw a6, 0(t1)
 	li a7, 10
+    nop
 	ecall
