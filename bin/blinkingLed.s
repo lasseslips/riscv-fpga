@@ -1,7 +1,11 @@
 .text
 main:
 	li a0, 0
-	li a1, 50000
+    lui x11, 0x18
+    nop
+    nop
+    nop
+    addi x11, x11, 1696
 
 toggle:
     beqz a2, setToOne

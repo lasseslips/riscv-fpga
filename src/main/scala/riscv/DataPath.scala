@@ -6,13 +6,25 @@ class DataPath(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
     //DEBUG
     //val registers = Output(Vec(32, UInt(32.W)))
-    val reg12 = Output(UInt(32.W))
+    val reg12_0 = Output(UInt(1.W))
+    val test = Output(Bool())
 
 
     //DONT DELETE
     val ins = Output(UInt(32.W))
 
   })
+  val CNT_MAX = (1000000 / 2 - 1).U
+  
+  val cntReg = RegInit(0.U(32.W))
+  val blkReg = RegInit(0.U(1.W))
+
+  cntReg := cntReg + 1.U
+  when(cntReg === CNT_MAX) {
+    cntReg := 0.U
+    blkReg := ~blkReg
+  }
+  io.test := blkReg
 
   //Util.convertBinToHex(pathToBin)
   val code = Util.readBin(pathToBin)
@@ -47,12 +59,14 @@ class DataPath(pathToBin: String = "") extends Module {
 
   //Debug
   //io.registers := decode.io.registers
-  io.reg12 := decode.io.registers(12)
+  val slice = Wire(UInt(32.W))
+  slice := decode.io.registers(12)
+  io.reg12_0 := slice(0)
 
 
 }
 
 object Main extends App {
   println("Generating RISC-V verilog")
-  emitVerilog(new DataPath("bin/addlarge"), Array("--target-dir", "generated"))
+  emitVerilog(new DataPath("bin/blinkingLed"), Array("--target-dir", "generated"))
 }
