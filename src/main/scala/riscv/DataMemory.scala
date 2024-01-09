@@ -81,8 +81,8 @@ class DataMemory extends Module {
       mask(3) := false.B
     }
   }
-  // 1,048,576 x 32 bit = 32Mb
-  val mem = SyncReadMem(Math.pow(2, 10).toInt, Vec(4, UInt(8.W)), SyncReadMem.WriteFirst)
+  // 65536 x 32bit = 2,097,152 bit
+  val mem = SyncReadMem(Math.pow(2, 16).toInt, Vec(4, UInt(8.W)), SyncReadMem.WriteFirst)
 
   when(memWrite) {
     mem.write(addr,dataInVec,mask)
