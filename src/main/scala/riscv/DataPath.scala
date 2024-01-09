@@ -14,6 +14,7 @@ class DataPath(pathToBin: String = "") extends Module {
     val ins = Output(UInt(32.W))
 
   })
+  //DEBUG BLINKING LED
   val CNT_MAX = (40000000 / 2 - 1).U
   
   val cntReg = RegInit(0.U(32.W))
