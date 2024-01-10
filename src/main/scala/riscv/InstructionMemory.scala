@@ -20,8 +20,12 @@ class InstructionMemory(code: Array[Int]) extends Module {
   val nextPc = WireDefault(0.U(32.W))
   val mem = VecInit(code.map(_.S(32.W).asUInt))
   when(!halt) {
-    nextPc := Mux(io.ExFe.jump, io.ExFe.pc + 4.U, pc + 4.U)
-    io.FeDec.instruction := mem((nextPc - 4.U) / 4.U)
+    when(io.stall) {
+      nextPc := pc
+    } .otherwise {
+      nextPc := Mux(io.ExFe.jump, io.ExFe.pc, pc + 4.U)
+    }
+    io.FeDec.instruction := mem((pc) / 4.U)
   } .otherwise {
     io.FeDec.instruction := "h00000013".U // NOP
   }
@@ -36,10 +40,6 @@ class InstructionMemory(code: Array[Int]) extends Module {
 
   io.FeDec.pc := pc
 
-  //stall
-  when(io.stall) {
-    pc := pc - 4.U
-  }
 }
 
 

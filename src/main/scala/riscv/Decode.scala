@@ -24,21 +24,27 @@ class Decode extends Module {
 
   })
 
-
-  val feDecReg = RegNext(io.FeDec)
-  /*when(io.flush) {
-    feDecReg := Zeroed.FeDec()
+  val instruction = io.FeDec.instruction
+  val instructionReg = RegInit("h13".U(32.W))
+  val pcReg = RegInit(0.U(32.W))
+  when(!io.stall) {
+    instructionReg := instruction
+    pcReg := io.FeDec.pc
+  }
+  when(io.flush) {
+    instructionReg := "h13".U(32.W)
   }
 
-   */
 
-  val insOpcode = feDecReg.instruction(6, 0)
+  val feDecReg = RegNext(io.FeDec)
 
-  val funct3 = feDecReg.instruction(14, 12)
-  val funct7 = feDecReg.instruction(31, 25)
-  val rs1Idx = feDecReg.instruction(19, 15)
-  val rs2Idx = feDecReg.instruction(24, 20)
-  val wrIdx = feDecReg.instruction(11, 7)
+  val insOpcode = instructionReg(6, 0)
+
+  val funct3 = instructionReg(14, 12)
+  val funct7 = instructionReg(31, 25)
+  val rs1Idx = instructionReg(19, 15)
+  val rs2Idx = instructionReg(24, 20)
+  val wrIdx = instructionReg(11, 7)
   val imm = Wire(UInt(32.W))
   val types = Wire(UInt(6.W))
   val opcode = Wire(UInt(6.W))
@@ -94,7 +100,7 @@ class Decode extends Module {
     is(Opcode.AluImm.U) {
       types := Types.I.id.U
       //sign extend imm
-      val slice = feDecReg.instruction(31, 20)
+      val slice = instructionReg(31, 20)
       val signBit = slice(11)
       imm := Cat(Fill(20, signBit), slice)
       switch(funct3) {
@@ -114,7 +120,7 @@ class Decode extends Module {
           opcode := AluType.XOR.id.U
         }
         is(AluImmFunct3.SRLI_SRAI.U) {
-          imm := feDecReg.instruction(24, 20)
+          imm := instructionReg(24, 20)
           when(funct7 === "h20".U) {
             opcode := AluType.SRA.id.U
           }.otherwise {
@@ -132,52 +138,52 @@ class Decode extends Module {
     }
     is(Opcode.Branch.U) {
       types := Types.B.id.U
-      val imm10_5 = feDecReg.instruction(30, 25)
-      val imm4_1 = feDecReg.instruction(11, 8)
-      val imm11 = feDecReg.instruction(7)
-      val imm12 = feDecReg.instruction(31)
+      val imm10_5 = instructionReg(30, 25)
+      val imm4_1 = instructionReg(11, 8)
+      val imm11 = instructionReg(7)
+      val imm12 = instructionReg(31)
       //the fill is for sign extention
       imm := Cat(Fill(20,imm12),imm12, imm11, imm10_5, imm4_1, 0.U)
       opcode := funct3
     }
     is(Opcode.Load.U) {
       types := Types.LOAD.id.U
-      val slice = feDecReg.instruction(31, 20)
+      val slice = instructionReg(31, 20)
       val signBit = slice(11)
       imm := Cat(Fill(20, signBit), slice)
       opcode := funct3
     }
     is(Opcode.Store.U) {
       types := Types.S.id.U
-      val imm4 = feDecReg.instruction(11, 7)
-      val imm11_5 = feDecReg.instruction(31, 25)
+      val imm4 = instructionReg(11, 7)
+      val imm11_5 = instructionReg(31, 25)
       val signBit = imm11_5(6)
       imm := Cat(Fill(20,signBit), imm11_5, imm4)
       opcode := funct3
     }
     is(Opcode.Lui.U) {
       types := Types.U.id.U
-      imm := Cat(feDecReg.instruction(31, 12), "b0".U(12.W))
+      imm := Cat(instructionReg(31, 12), "b0".U(12.W))
       opcode := insType.LUI.U
     }
     is(Opcode.AuiPc.U) {
       types := Types.U.id.U
-      imm := Cat(feDecReg.instruction(31, 12), "b0".U(12.W))
+      imm := Cat(instructionReg(31, 12), "b0".U(12.W))
       opcode := insType.AUIPC.U
     }
     is(Opcode.Jal.U) {
       types := Types.J.id.U
-      val imm20 = feDecReg.instruction(31)
-      val imm19_12 = feDecReg.instruction(19, 12)
-      val imm11 = feDecReg.instruction(20)
-      val imm10_1 = feDecReg.instruction(30, 21)
+      val imm20 = instructionReg(31)
+      val imm19_12 =instructionReg(19, 12)
+      val imm11 = instructionReg(20)
+      val imm10_1 = instructionReg(30, 21)
       imm := Cat(Fill(12, imm20), imm20, imm19_12, imm11, imm10_1, 0.U)
       opcode := insType.JAL.U
     }
     is(Opcode.JalR.U) {
       types := Types.J.id.U
       //sign extend imm
-      val slice = feDecReg.instruction(31, 20)
+      val slice = instructionReg(31, 20)
       val signBit = slice(11)
       imm := Cat(Fill(20, signBit), slice)
       opcode := insType.JALR.U
@@ -188,7 +194,7 @@ class Decode extends Module {
     }
     is(Opcode.ECall.U) {
       types := Types.ECALL.id.U
-      val isEBreak = feDecReg.instruction(20)
+      val isEBreak = instructionReg(20)
       when(isEBreak === 1.U) {
         opcode := insType.EBREAK.U
       }.otherwise {
@@ -256,16 +262,11 @@ class Decode extends Module {
   io.halt := control.io.halt
 
   io.DecEx.regWrIdx := wrIdx
-  io.DecEx.pc := feDecReg.pc
+  io.DecEx.pc := pcReg
 
   io.registers := registers
 
 
-  //stall needs to store the value of the stall signal for the next cycle
-  when(io.stall) {
-    feDecReg := feDecReg
-  }
 
-  
 
 }

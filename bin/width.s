@@ -2,8 +2,6 @@
     nop
 	li t0, 0xABCDEFAB
 	li t1, 127
-    nop
-    nop
 	sb t0, 0(t1)
 	sh t0, 1(t1)
 	sw t0, 3(t1)
@@ -14,5 +12,4 @@
 	lhu a5, 1(t1)
 	lw a6, 0(t1)
 	li a7, 10
-    nop
 	ecall

@@ -25,9 +25,9 @@ class HazardDetection extends Module {
   rs1 := io.rs1
   rs2 := io.rs2
 
-  when(ExRegWrite && (ExwrIdx === rs1 || ExwrIdx === rs2)) {
+  when(ExRegWrite && (ExwrIdx === rs1 || ExwrIdx === rs2) && (ExwrIdx =/= 0.U)) {
     io.stall := true.B
-  } .elsewhen(MemRegWrite && (MemwrIdx === rs1 || MemwrIdx === rs2)) {
+  } .elsewhen(MemRegWrite && (MemwrIdx === rs1 || MemwrIdx === rs2) && (MemwrIdx =/= 0.U)) {
     io.stall := true.B
   } .otherwise {
     io.stall := false.B
