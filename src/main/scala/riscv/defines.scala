@@ -118,3 +118,7 @@ object LoadStoreFunct {
   val LBU = 0x04
   val LHU = 0x05
 }
+object ForwardingType extends Enumeration {
+  type ForwardingType = Value
+  val REGFILE, EXMEM, MEMWB = Value
+}

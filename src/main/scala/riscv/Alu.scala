@@ -11,6 +11,10 @@ class Alu extends Module {
     val ExFe = Output(new ExFe())
     val flush = Output(Bool())
     val stall = Input(Bool())
+    val forward1 = Input(UInt(2.W))
+    val MemAddr = Input(UInt(32.W))
+    val WbData = Input(UInt(32.W))
+    val forward2 = Input(UInt(2.W))
   })
 
 
@@ -30,8 +34,33 @@ class Alu extends Module {
   op2 := DontCare
   val aluOpcode = decExReg.aluOpcode
 
-  op1 := Mux(decExReg.aluSrc(1),decExReg.pc,decExReg.regData1)
-  op2 := Mux(decExReg.aluSrc(0),decExReg.imm,decExReg.regData2)
+  val rs1 = WireDefault(0.U(32.W))
+  val rs2 = WireDefault(0.U(32.W))
+  switch(io.forward1) {
+    is(ForwardingType.EXMEM.id.U) {
+      rs1 := io.MemAddr
+    }
+    is(ForwardingType.MEMWB.id.U) {
+      rs1 := io.WbData
+    }
+    is(ForwardingType.REGFILE.id.U) {
+      rs1 := decExReg.regData1
+    }
+   }
+  switch(io.forward2) {
+    is(ForwardingType.EXMEM.id.U) {
+      rs2 := io.MemAddr
+    }
+    is(ForwardingType.MEMWB.id.U) {
+      rs2 := io.WbData
+    }
+    is(ForwardingType.REGFILE.id.U) {
+      rs2 := decExReg.regData2
+    }
+  }
+
+  op1 := Mux(decExReg.aluSrc(1),decExReg.pc,rs1)
+  op2 := Mux(decExReg.aluSrc(0),decExReg.imm,rs2)
 
   //ADD
   switch (aluOpcode) {
@@ -69,8 +98,8 @@ class Alu extends Module {
 
   val branch = Module(new Branch())
 
-  branch.io.rs1 := decExReg.regData1
-  branch.io.rs2 := decExReg.regData2
+  branch.io.rs1 := rs1
+  branch.io.rs2 := rs2
   branch.io.branchEnable := decExReg.branchEnable
   branch.io.branchType := decExReg.branchType
 
@@ -85,7 +114,7 @@ class Alu extends Module {
   io.ExFe.pc := res
   io.ExMem.addr := res
   io.ExMem.pc := decExReg.pc
-  io.ExMem.data := decExReg.regData2
+  io.ExMem.data := rs2
 
   io.ExMem.regWrite := decExReg.regWrite
   io.ExMem.memWrite := decExReg.memWrite

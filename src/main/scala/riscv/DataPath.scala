@@ -42,6 +42,8 @@ class DataPath(pathToBin: String = "") extends Module {
   instructionMemory.io.ExFe <> alu.io.ExFe
   decode.io.DecEx <> alu.io.DecEx
   alu.io.ExMem <> dataMemory.io.ExMem
+  alu.io.MemAddr := dataMemory.io.MemAddr
+  alu.io.WbData := writeBack.io.WbDec.wrData
   dataMemory.io.MemWb <> writeBack.io.MemWb
   writeBack.io.WbDec <> decode.io.WbDec
   decode.io.flush := alu.io.flush
@@ -65,6 +67,8 @@ class DataPath(pathToBin: String = "") extends Module {
   instructionMemory.io.stall := hazardDetection.io.stall
   decode.io.stall := hazardDetection.io.stall
   alu.io.stall := hazardDetection.io.stall
+  alu.io.forward1 := hazardDetection.io.forward1
+  alu.io.forward2 := hazardDetection.io.forward2
 
   //DONT DELETE
   io.ins := instructionMemory.io.FeDec.instruction

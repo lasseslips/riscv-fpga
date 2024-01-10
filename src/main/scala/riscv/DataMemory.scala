@@ -6,6 +6,7 @@ class DataMemory extends Module {
   val io = IO(new Bundle() {
     val ExMem = Input(new ExMem())
     val MemWb = Output(new MemWb())
+    val MemAddr = Output(UInt(32.W))
   })
 
   val dataOut = Wire(UInt(32.W))
@@ -14,6 +15,8 @@ class DataMemory extends Module {
   val addr = Wire(UInt(32.W))
   val memWrite = Wire(Bool())
   val data = Wire(Vec(4, UInt(8.W)))
+  val memDataReg = RegNext(io.ExMem.addr)
+  io.MemAddr := memDataReg
 
   class ControlReg extends Bundle {
     val regWrite = Bool()
