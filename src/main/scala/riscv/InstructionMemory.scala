@@ -8,6 +8,7 @@ class InstructionMemory(code: Array[Int]) extends Module {
     val FeDec = Output(new FeDec())
     val ExFe = Input(new ExFe())
     val halt = Input(Bool())
+    val stall = Input(Bool())
   })
 
 
@@ -34,6 +35,11 @@ class InstructionMemory(code: Array[Int]) extends Module {
 
 
   io.FeDec.pc := pc
+
+  //stall
+  when(io.stall) {
+    pc := pc - 4.U
+  }
 }
 
 

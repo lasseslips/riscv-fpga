@@ -10,6 +10,7 @@ class Alu extends Module {
     val ExMem = Output(new ExMem())
     val ExFe = Output(new ExFe())
     val flush = Output(Bool())
+    val stall = Input(Bool())
   })
 
 
@@ -92,7 +93,10 @@ class Alu extends Module {
   io.ExMem.regWrIdx := decExReg.regWrIdx
   io.ExMem.regWriteSrc := decExReg.regWriteSrc
 
-
+  //stall
+  when(io.stall) {
+    decExReg := Zeroed.DecEx()
+  }
   
 
 

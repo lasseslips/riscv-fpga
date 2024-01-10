@@ -54,6 +54,18 @@ class DataPath(pathToBin: String = "") extends Module {
   }
 
 
+  //Hazard detection
+  val hazardDetection = Module(new HazardDetection())
+  hazardDetection.io.ExwrIdx := alu.io.ExMem.regWrIdx
+  hazardDetection.io.MemwrIdx := dataMemory.io.ExMem.regWrIdx
+  hazardDetection.io.ExRegWrite := alu.io.ExMem.regWrite
+  hazardDetection.io.MemRegWrite := dataMemory.io.ExMem.regWrite
+  hazardDetection.io.rs1 := decode.io.rs1
+  hazardDetection.io.rs2 := decode.io.rs2
+  instructionMemory.io.stall := hazardDetection.io.stall
+  decode.io.stall := hazardDetection.io.stall
+  alu.io.stall := hazardDetection.io.stall
+
   //DONT DELETE
   io.ins := instructionMemory.io.FeDec.instruction
 

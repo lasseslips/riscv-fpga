@@ -10,6 +10,10 @@ class Decode extends Module {
     val WbDec = Input(new WbDec())
     val halt = Output(Bool())
     val flush = Input(Bool())
+    //for hazard detection
+    val rs1 = Output(UInt(5.W))
+    val rs2 = Output(UInt(5.W))
+    val stall = Input(Bool())
     //Debug
     val opcode = Output(UInt(6.W))
     val types = Output(UInt(5.W))
@@ -41,6 +45,8 @@ class Decode extends Module {
   types := DontCare
   opcode := DontCare
   imm := DontCare
+  io.rs1 := rs1Idx
+  io.rs2 := rs2Idx
   io.rs1Idx := rs1Idx
   io.rs2Idx := rs2Idx
   io.opcode := opcode
@@ -253,6 +259,12 @@ class Decode extends Module {
   io.DecEx.pc := feDecReg.pc
 
   io.registers := registers
+
+
+  //stall needs to store the value of the stall signal for the next cycle
+  when(io.stall) {
+    feDecReg := feDecReg
+  }
 
   
 
