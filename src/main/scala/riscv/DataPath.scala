@@ -4,10 +4,13 @@ import chisel3._
 import chisel3.util._
 class DataPath(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
+    val ledOut = Output(UInt(32.W))
+
+
     //DEBUG
     val registers = Output(Vec(32, UInt(32.W)))
-    val reg12_0 = Output(UInt(1.W))
-    val test = Output(Bool())
+    //val reg12_0 = Output(UInt(1.W))
+    //val test = Output(Bool())
 
 
     //DONT DELETE
@@ -15,7 +18,7 @@ class DataPath(pathToBin: String = "") extends Module {
 
   })
   //DEBUG BLINKING LED
-  val CNT_MAX = (40000000 / 2 - 1).U
+  /*val CNT_MAX = (40000000 / 2 - 1).U
   
   val cntReg = RegInit(0.U(32.W))
   val blkReg = RegInit(0.U(1.W))
@@ -26,6 +29,7 @@ class DataPath(pathToBin: String = "") extends Module {
     blkReg := ~blkReg
   }
   io.test := blkReg
+  */
 
   //Util.convertBinToHex(pathToBin)
   val code = Util.readBin(pathToBin)
@@ -36,12 +40,26 @@ class DataPath(pathToBin: String = "") extends Module {
   val alu = Module(new Alu())
   val dataMemory = Module(new DataMemory())
   val writeBack = Module(new WriteBack())
+  val gpio = Module(new Gpio())
 
   //Connections
   instructionMemory.io.FeDec <> decode.io.FeDec
   instructionMemory.io.ExFe <> alu.io.ExFe
   decode.io.DecEx <> alu.io.DecEx
-  alu.io.ExMem <> dataMemory.io.ExMem
+
+
+  gpio.io.inputPins := DontCare
+  gpio.io.MemGpio := DontCare
+  io.ledOut := gpio.io.outputPins
+
+  when(alu.io.ExMem.addr(30) === 1.U) {
+    gpio.io.MemGpio.addr := alu.io.ExMem.addr
+    gpio.io.MemGpio.data := alu.io.ExMem.data
+    gpio.io.MemGpio.memWrite := alu.io.ExMem.memWrite
+    }
+    alu.io.ExMem <> dataMemory.io.ExMem
+
+
   alu.io.MemAddr := dataMemory.io.MemAddr
   alu.io.WbData := writeBack.io.WbDec.wrData
   dataMemory.io.MemWb <> writeBack.io.MemWb
@@ -75,15 +93,18 @@ class DataPath(pathToBin: String = "") extends Module {
 
 
   //Debug
+  
   io.registers := decode.io.registers
+  /*
   val slice = Wire(UInt(32.W))
   slice := decode.io.registers(12)
   io.reg12_0 := slice(0)
+  */
 
 
 }
 
 object Main extends App {
   println("Generating RISC-V verilog")
-  emitVerilog(new DataPath("bin/blinkingLed"), Array("--target-dir", "generated"))
+  emitVerilog(new DataPath("bin/ledtest"), Array("--target-dir", "generated"))
 }

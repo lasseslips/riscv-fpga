@@ -1,8 +1,9 @@
 module TopModule(
     input clock,
     input reset,
-    output io_test,
-    output io_reg12_0,
+    //output io_test,
+    //output io_reg12_0,
+	 output [31:0] io_ledOut,
     output [31:0] io_ins
 );
 
@@ -21,8 +22,9 @@ pll pll_inst (
 DataPath dataPath_mod(
     .clock(pll_clock),
     .reset(reset),
-    .io_reg12_0(io_reg12_0),
-    .io_test(io_test),
+    //.io_reg12_0(io_reg12_0),
+    //.io_test(io_test),
+	 .io_ledOut(io_ledOut),
     .io_ins(io_ins)
 );
 endmodule

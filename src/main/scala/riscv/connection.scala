@@ -38,6 +38,16 @@ class ExMem extends Bundle {
   val regWrIdx = UInt(5.W)
   val regWriteSrc = UInt(2.W)
 }
+class MemGpio extends Bundle {
+  val data = UInt(32.W)
+  val addr = UInt(32.W)
+  val memWrite = Bool()
+}
+class GpioPins extends Bundle {
+  val greenLed = UInt(9.W)
+  val redLed = UInt(18.W)
+}
+
 
 class MemWb extends Bundle {
   val alu = UInt(32.W)
