@@ -15,7 +15,7 @@ class Gpio extends Module {
   val addr = Wire(UInt(32.W))
   addr := io.MemGpio.addr
   val data = Wire(UInt(32.W))
-  data := io.MemGpio.addr(1,0)
+  data := io.MemGpio.data
 
   val outputPins = WireDefault(0.U(32.W))
   io.outputPins := outputPins
