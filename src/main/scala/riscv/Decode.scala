@@ -239,6 +239,13 @@ class Decode extends Module {
   when(regWrite && (pipelinedWrIdx === rs2Idx) && (pipelinedWrIdx =/= 0.U)) {
     reg2 := dataIn
   }
+  //may not be a good solution
+  when(rs1Idx === 0.U) {
+    reg1 := 0.U
+  }
+  when(rs2Idx === 0.U) {
+    reg2 := 0.U
+  }
 
   io.DecEx.imm := imm
   io.DecEx.regData1 := reg1
