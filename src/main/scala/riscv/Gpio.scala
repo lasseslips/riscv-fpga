@@ -19,6 +19,7 @@ class Gpio extends Module {
 
   val outputPins = WireDefault(0.U(32.W))
   io.outputPins := outputPins
+  controlReg := "hffffffff".U
 
   //io starts at address 0x4000.0000
   when(addr(30) === 1.U && io.MemGpio.memWrite) {
