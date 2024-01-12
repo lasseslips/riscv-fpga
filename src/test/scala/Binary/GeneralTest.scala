@@ -6,8 +6,8 @@ import riscv._
 
 class GeneralTest extends AnyFlatSpec with ChiselScalatestTester{
   "GeneralTest" should "Pass" in {
-    test(new DataPath("bin/ledtest")) { dut =>
-      dut.clock.step(200)
+    test(new DataPath("bin/fib")) { dut =>
+      dut.clock.step(500)
     }
   }
 }

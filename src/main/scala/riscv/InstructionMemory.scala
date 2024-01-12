@@ -21,7 +21,7 @@ class InstructionMemory(code: Array[Int]) extends Module {
   val mem = VecInit(code.map(_.S(32.W).asUInt))
   when(!halt) {
     when(io.stall) {
-      nextPc := pc
+      nextPc := Mux(io.ExFe.jump, io.ExFe.pc, pc)
     } .otherwise {
       nextPc := Mux(io.ExFe.jump, io.ExFe.pc, pc + 4.U)
     }
