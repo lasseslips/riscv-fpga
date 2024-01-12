@@ -85,7 +85,7 @@ class Control extends Module {
       }
       io.regWrite := true.B
       io.aluOpcode := insType.ADD.U
-      io.regWriteSrc := RegWriteSrc.ALU.id.U
+      io.regWriteSrc := RegWriteSrc.PC.id.U
       io.jumpEnable := true.B
     }
     is(Types.ECALL.id.U) {
