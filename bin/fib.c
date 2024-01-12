@@ -1,5 +1,6 @@
 // This is our minimal startup code (usually in _start)
 #define ADDR 0x40000000
+#define FREQ 20000000
 asm("nop");
 asm("li sp, 0x100000"); // SP set to 1 MB
 asm("jal main");        // call main
@@ -20,9 +21,19 @@ int fib(int n) {
 }
 
 int main(void) {
-    int res = fib(10);
+
+    int res;
     int* output_ptr = (int*)ADDR;
-    *output_ptr = res;
+    while(1) {
+        for(int i = 0; i < 20; i++) {
+            for(int j = 0; j < FREQ/8; j++) {
+                asm("nop");
+            }
+            res = fib(i);
+            *output_ptr = (res << 9);
+        }
+
+    }
     return res;
 }
 
