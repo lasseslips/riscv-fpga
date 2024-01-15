@@ -113,5 +113,5 @@ class DataPath(pathToBin: String = "") extends Module {
 
 object Main extends App {
   println("Generating RISC-V verilog")
-  emitVerilog(new DataPath("bin/ledtest"), Array("--target-dir", "generated"))
+  emitVerilog(new DataPath("bin/fib"), Array("--target-dir", "generated"))
 }
