@@ -120,5 +120,5 @@ object LoadStoreFunct {
 }
 object ForwardingType extends Enumeration {
   type ForwardingType = Value
-  val REGFILE, EXMEM, MEMWB = Value
+  val REGFILE, EXMEM, MEMWB, MEMDATA, PC = Value
 }

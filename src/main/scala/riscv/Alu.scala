@@ -11,10 +11,12 @@ class Alu extends Module {
     val ExFe = Output(new ExFe())
     val flush = Output(Bool())
     val stall = Input(Bool())
-    val forward1 = Input(UInt(2.W))
+    val forward1 = Input(UInt(3.W))
     val MemAddr = Input(UInt(32.W))
     val WbData = Input(UInt(32.W))
-    val forward2 = Input(UInt(2.W))
+    val forward2 = Input(UInt(3.W))
+    val memData = Input(UInt(32.W))
+    val memPc = Input(UInt(32.W))
   })
 
 
@@ -46,6 +48,12 @@ class Alu extends Module {
     is(ForwardingType.REGFILE.id.U) {
       rs1 := decExReg.regData1
     }
+    is(ForwardingType.MEMDATA.id.U) {
+      rs1 := io.memData
+    }
+    is(ForwardingType.PC.id.U) {
+      rs1 := io.memPc
+    }
    }
   switch(io.forward2) {
     is(ForwardingType.EXMEM.id.U) {
@@ -56,6 +64,12 @@ class Alu extends Module {
     }
     is(ForwardingType.REGFILE.id.U) {
       rs2 := decExReg.regData2
+    }
+    is(ForwardingType.MEMDATA.id.U) {
+      rs2 := io.memData
+    }
+    is(ForwardingType.PC.id.U) {
+      rs2 := io.memPc
     }
   }
 

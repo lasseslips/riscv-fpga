@@ -62,6 +62,8 @@ class DataPath(pathToBin: String = "") extends Module {
 
   alu.io.MemAddr := dataMemory.io.MemAddr
   alu.io.WbData := writeBack.io.WbDec.wrData
+  alu.io.memData := dataMemory.io.MemWb.mem
+  alu.io.memPc := dataMemory.io.MemWb.pc
   dataMemory.io.MemWb <> writeBack.io.MemWb
   writeBack.io.WbDec <> decode.io.WbDec
   decode.io.flush := alu.io.flush
@@ -82,6 +84,7 @@ class DataPath(pathToBin: String = "") extends Module {
   hazardDetection.io.MemRegWrite := dataMemory.io.MemWb.regWrite
   hazardDetection.io.rs1 := decode.io.rs1
   hazardDetection.io.rs2 := decode.io.rs2
+  hazardDetection.io.regWriteSrc := alu.io.ExMem.regWriteSrc
   instructionMemory.io.stall := hazardDetection.io.stall
   decode.io.stall := hazardDetection.io.stall
   alu.io.stall := hazardDetection.io.stall
