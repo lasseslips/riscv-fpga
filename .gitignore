@@ -7,3 +7,5 @@ test_run_dir/
 .metals/
 quartus/
 *.hex
+*.out
+*.bin
