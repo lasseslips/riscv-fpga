@@ -10,11 +10,13 @@ class Gpio extends Module {
     val ledPins = Output(UInt(32.W))
     val sevenSegPins = Output(Vec(8, UInt(7.W)))
     val inputPins = Input(UInt(32.W))
+    val lcdPins = Output(UInt(13.W))
   })
 
   val controlReg = RegInit(0.U(32.W))
   val ledReg = RegInit(0.U(32.W))
   val segReg = RegInit(0.U(32.W))
+  val lcdReg = RegInit(0.U(13.W))
   val addr = Wire(UInt(32.W))
   addr := io.MemGpio.addr
   val data = Wire(UInt(32.W))
@@ -22,15 +24,19 @@ class Gpio extends Module {
 
   val ledOut = WireDefault(0.U(32.W))
   io.ledPins := ledOut
+  io.lcdPins := lcdReg
   controlReg := "hffffffff".U
 
   //io starts at address 0x4000.0000
-  when(addr(30) === 1.U && io.MemGpio.memWrite) {
+  when((addr >> 7) === 4.U && io.MemGpio.memWrite) {
     when(addr(5)) {
       segReg := data
     } .otherwise {
       ledReg := data
     }
+  }
+  when((addr >> 7) === 5.U && io.MemGpio.memWrite) {
+    lcdReg := data(12,0)
   }
   ledOut := controlReg & ledReg
 
