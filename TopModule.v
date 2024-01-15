@@ -3,8 +3,16 @@ module TopModule(
     input reset,
     //output io_test,
     //output io_reg12_0,
-	 output [31:0] io_ledOut,
-    output [31:0] io_ins
+	output [31:0] io_ledOut,
+    output [31:0] io_ins,
+    output [6:0]  io_sevenSegPins_0,
+    output [6:0]  io_sevenSegPins_1,
+    output [6:0]  io_sevenSegPins_2,
+    output [6:0]  io_sevenSegPins_3,
+    output [6:0]  io_sevenSegPins_4,
+    output [6:0]  io_sevenSegPins_5,
+    output [6:0]  io_sevenSegPins_6,
+    output [6:0]  io_sevenSegPins_7
 );
 
 
@@ -24,7 +32,15 @@ DataPath dataPath_mod(
     .reset(reset),
     //.io_reg12_0(io_reg12_0),
     //.io_test(io_test),
-	 .io_ledOut(io_ledOut),
-    .io_ins(io_ins)
+	.io_ledOut(io_ledOut),
+    .io_ins(io_ins),
+    .io_sevenSegPins_0(io_sevenSegPins_0),
+    .io_sevenSegPins_1(io_sevenSegPins_1),
+    .io_sevenSegPins_2(io_sevenSegPins_2),
+    .io_sevenSegPins_3(io_sevenSegPins_3),
+    .io_sevenSegPins_4(io_sevenSegPins_4),
+    .io_sevenSegPins_5(io_sevenSegPins_5),
+    .io_sevenSegPins_6(io_sevenSegPins_6),
+    .io_sevenSegPins_7(io_sevenSegPins_7)
 );
 endmodule

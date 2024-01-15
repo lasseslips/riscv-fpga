@@ -23,14 +23,16 @@ int fib(int n) {
 int main(void) {
 
     int res;
-    int* output_ptr = (int*)ADDR;
+    int* ledPtr = (int*)ADDR;
+    int* sevenSegPtr = (int*)(ADDR + 32);
     while(1) {
-        for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < 45; i++) {
             for(int j = 0; j < FREQ/8; j++) {
                 asm("nop");
             }
             res = fib(i);
-            *output_ptr = (res << 9);
+            *ledPtr = (res << 9);
+            *sevenSegPtr = res;
         }
 
     }
