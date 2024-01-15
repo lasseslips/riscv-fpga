@@ -2,9 +2,11 @@ package riscv
 
 import chisel3._
 import chisel3.util._
+import peripherals.Gpio
 class DataPath(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
     val ledOut = Output(UInt(32.W))
+    val sevenSegPins = Output(Vec(8, UInt(7.W)))
 
 
     //DEBUG
@@ -50,7 +52,9 @@ class DataPath(pathToBin: String = "") extends Module {
 
   gpio.io.inputPins := DontCare
   gpio.io.MemGpio := DontCare
-  io.ledOut := gpio.io.outputPins
+  io.ledOut := gpio.io.ledPins
+  io.sevenSegPins := gpio.io.sevenSegPins
+
 
   when(alu.io.ExMem.addr(30) === 1.U) {
     gpio.io.MemGpio.addr := alu.io.ExMem.addr
