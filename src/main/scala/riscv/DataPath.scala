@@ -83,7 +83,7 @@ class DataPath(pathToBin: String = "") extends Module {
 
 
   //Hazard detection
-  val hazardDetection = Module(new HazardDetection())
+  val hazardDetection = Module(new ForwardingUnit())
   hazardDetection.io.ExwrIdx := alu.io.ExMem.regWrIdx
   hazardDetection.io.MemwrIdx := dataMemory.io.MemWb.regWrIdx
   hazardDetection.io.ExRegWrite := alu.io.ExMem.regWrite

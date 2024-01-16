@@ -9,6 +9,7 @@ asm("jal main");        // call main
 asm("li a7, 10");       // prepare ecall exit
 asm("ecall");           // now your simulator should stop
 
+/*
 void reverse(char *str, int length) {
     int start = 0;
     int end = length - 1;
@@ -74,6 +75,7 @@ void printToLcd(char str[], int size) {
    }
 }
 
+*/
 
 
 int main() {
@@ -82,10 +84,12 @@ int main() {
     volatile int i = 5123;
     *led = i;
     *sevenSeg = i;
+    /*
     char str[15];
     itoa(5123,str);
     while(1) {
         printToLcd(str, sizeof(str));
     }
+    */
     return 0;
 }
