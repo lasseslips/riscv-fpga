@@ -28,14 +28,14 @@ class Gpio extends Module {
   controlReg := "hffffffff".U
 
   //io starts at address 0x4000.0000
-  when((addr >> 7) === 4.U && io.MemGpio.memWrite) {
+  when((addr >> (7 * 4)) === 4.U && io.MemGpio.memWrite) {
     when(addr(5)) {
       segReg := data
     } .otherwise {
       ledReg := data
     }
   }
-  when((addr >> 7) === 5.U && io.MemGpio.memWrite) {
+  when((addr >> (7 * 4)) === 5.U && io.MemGpio.memWrite) {
     lcdReg := data(12,0)
   }
   ledOut := controlReg & ledReg

@@ -3,6 +3,8 @@ scalaVersion := "2.12.13"
 scalacOptions ++= Seq(
   "-feature",
   "-language:reflectiveCalls",
+  "-deprecation",
+  "-unchecked",
 )
 
 // Chisel 3.5

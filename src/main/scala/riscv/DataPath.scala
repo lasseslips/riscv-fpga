@@ -7,6 +7,7 @@ class DataPath(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
     val ledOut = Output(UInt(32.W))
     val sevenSegPins = Output(Vec(8, UInt(7.W)))
+    val lcdPins = Output(UInt(13.W))
 
 
     //DEBUG
@@ -54,6 +55,7 @@ class DataPath(pathToBin: String = "") extends Module {
   gpio.io.MemGpio := DontCare
   io.ledOut := gpio.io.ledPins
   io.sevenSegPins := gpio.io.sevenSegPins
+  io.lcdPins := gpio.io.lcdPins
 
 
   when(alu.io.ExMem.addr(30) === 1.U) {
@@ -113,5 +115,5 @@ class DataPath(pathToBin: String = "") extends Module {
 
 object Main extends App {
   println("Generating RISC-V verilog")
-  emitVerilog(new DataPath("bin/fib"), Array("--target-dir", "generated"))
+  emitVerilog(new DataPath("bin/print"), Array("--target-dir", "generated"))
 }
