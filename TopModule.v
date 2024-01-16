@@ -12,7 +12,8 @@ module TopModule(
     output [6:0]  io_sevenSegPins_4,
     output [6:0]  io_sevenSegPins_5,
     output [6:0]  io_sevenSegPins_6,
-    output [6:0]  io_sevenSegPins_7
+    output [6:0]  io_sevenSegPins_7,
+    output [12:0] io_lcdPins
 );
 
 
@@ -41,6 +42,7 @@ DataPath dataPath_mod(
     .io_sevenSegPins_4(io_sevenSegPins_4),
     .io_sevenSegPins_5(io_sevenSegPins_5),
     .io_sevenSegPins_6(io_sevenSegPins_6),
-    .io_sevenSegPins_7(io_sevenSegPins_7)
+    .io_sevenSegPins_7(io_sevenSegPins_7),
+    .io_lcdPins(io_lcdPins)
 );
 endmodule
