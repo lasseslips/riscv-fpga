@@ -3,7 +3,8 @@ package Memory
 import chisel3._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
-import riscv.{DataMemory, LoadStoreFunct}
+import riscv.lib.LoadStoreFunct
+import riscv.stages.DataMemory
 
 class DataMemoryStageTest extends AnyFlatSpec with ChiselScalatestTester{
   "DataMemoryStage" should "Pass" in {

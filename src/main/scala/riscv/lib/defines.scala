@@ -1,4 +1,4 @@
-package riscv
+package riscv.lib
 
 object Opcode {
   val AluImm = 0x13

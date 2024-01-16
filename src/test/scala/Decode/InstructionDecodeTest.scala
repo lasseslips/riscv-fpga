@@ -3,12 +3,13 @@ package Decode
 import chisel3._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
-import riscv.{AluFunct3, AluType, Decode, LoadStoreFunct, Opcode, Types, insType}
+import riscv.lib.{AluFunct3, AluType, LoadStoreFunct, Opcode, Types, insType}
+import riscv.stages.InstructionDecode
 
 
-class DecodeTest extends AnyFlatSpec with ChiselScalatestTester{
+class InstructionDecodeTest extends AnyFlatSpec with ChiselScalatestTester{
   "DecodeTest" should "Pass" in {
-    test(new Decode) { dut =>
+    test(new InstructionDecode) { dut =>
       //add
       dut.io.FeDec.instruction.poke("b00000000000100010000000010110011".U)
       dut.clock.step()

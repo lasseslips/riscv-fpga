@@ -1,8 +1,8 @@
-package riscv
+package riscv.lib
 
 import java.io.PrintWriter
-import java.nio.{ByteBuffer, ByteOrder}
 import java.nio.file.{Files, Paths}
+import java.nio.{ByteBuffer, ByteOrder}
 
 object Util {
     def convertBinToHex(path: String): Unit = {

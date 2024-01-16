@@ -1,7 +1,8 @@
-package riscv
+package riscv.submodules
 
 import chisel3._
 import chisel3.util._
+import riscv.lib.{RegWriteSrc, Types, insType}
 
 class Control extends Module {
   val io = IO(new Bundle() {

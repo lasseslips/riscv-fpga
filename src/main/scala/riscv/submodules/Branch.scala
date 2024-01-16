@@ -1,7 +1,9 @@
-package riscv
+package riscv.submodules
 
 import chisel3._
 import chisel3.util._
+import riscv.lib.BranchFunct
+
 class Branch extends Module {
   val io = IO(new Bundle() {
     val rs1 = Input(UInt(32.W))

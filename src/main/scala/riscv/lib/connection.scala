@@ -1,4 +1,5 @@
-package riscv
+package riscv.lib
+
 import chisel3._
 
 class FeDec extends Bundle {
@@ -42,10 +43,6 @@ class MemGpio extends Bundle {
   val data = UInt(32.W)
   val addr = UInt(32.W)
   val memWrite = Bool()
-}
-class GpioPins extends Bundle {
-  val greenLed = UInt(9.W)
-  val redLed = UInt(18.W)
 }
 
 

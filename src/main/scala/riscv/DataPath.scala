@@ -3,6 +3,9 @@ package riscv
 import chisel3._
 import chisel3.util._
 import peripherals.Gpio
+import riscv.lib.Util
+import riscv.stages.{DataMemory, Execute, InstructionDecode, InstructionFetch, WriteBack}
+import riscv.submodules.ForwardingUnit
 class DataPath(pathToBin: String = "") extends Module {
   val io = IO(new Bundle() {
     val ledOut = Output(UInt(32.W))
@@ -38,9 +41,9 @@ class DataPath(pathToBin: String = "") extends Module {
   val code = Util.readBin(pathToBin)
 
   //Module loading
-  val instructionMemory = Module(new InstructionMemory(code))
-  val decode = Module(new Decode())
-  val alu = Module(new Alu())
+  val instructionMemory = Module(new InstructionFetch(code))
+  val decode = Module(new InstructionDecode())
+  val alu = Module(new Execute())
   val dataMemory = Module(new DataMemory())
   val writeBack = Module(new WriteBack())
   val gpio = Module(new Gpio())

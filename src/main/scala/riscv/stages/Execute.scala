@@ -1,10 +1,13 @@
-package riscv
+package riscv.stages
 
-import chisel3.util._
 import chisel3._
-import riscv.AluType._
+import chisel3.util._
+import riscv.lib.AluType._
+import riscv.submodules.Branch
+import riscv._
+import riscv.lib.{DecEx, ExFe, ExMem, ForwardingType, Zeroed}
 
-class Alu extends Module {
+class Execute extends Module {
   val io = IO(new Bundle() {
     val DecEx = Input(new DecEx())
     val ExMem = Output(new ExMem())

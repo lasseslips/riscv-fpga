@@ -3,11 +3,11 @@ package Alu
 import chisel3._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
-import riscv.Alu
+import riscv.stages.Execute
 
 class SubTest extends AnyFlatSpec with ChiselScalatestTester{
   "SUB" should "Pass" in {
-    test(new Alu) { dut =>
+    test(new Execute) { dut =>
       dut.io.DecEx.aluOpcode.poke(1.U)
       dut.io.DecEx.aluSrc.poke("b00".U)
 

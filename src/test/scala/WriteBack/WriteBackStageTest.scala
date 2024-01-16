@@ -3,7 +3,8 @@ package WriteBack
 import chisel3._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
-import riscv.{DataMemory, LoadStoreFunct, RegWriteSrc, WriteBack}
+import riscv.stages.{DataMemory, WriteBack}
+import riscv.lib.{LoadStoreFunct, RegWriteSrc}
 
 class WriteBackStageTest extends AnyFlatSpec with ChiselScalatestTester{
   "WriteBackStage" should "Pass" in {

@@ -1,7 +1,8 @@
-package riscv
+package riscv.stages
 
 import chisel3._
 import chisel3.util._
+import riscv.lib.{MemWb, RegWriteSrc, WbDec}
 class WriteBack extends Module {
   val io = IO(new Bundle() {
     val MemWb = Input(new MemWb())

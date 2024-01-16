@@ -2,7 +2,7 @@ import chisel3._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
 import riscv.DataPath
-import riscv.InstructionMemory
+import riscv.stages.InstructionFetch
 
 class AddlargeTest extends AnyFlatSpec with ChiselScalatestTester{
     "ADDLARGEBIN" should "Pass" in {

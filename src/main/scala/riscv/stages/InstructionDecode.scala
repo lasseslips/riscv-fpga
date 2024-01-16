@@ -1,9 +1,12 @@
-package riscv
+package riscv.stages
 
 import chisel3._
 import chisel3.util._
+import riscv.submodules.Control
+import riscv._
+import riscv.lib.{AluFunct3, AluImmFunct3, AluType, DecEx, FeDec, Opcode, Types, WbDec, insType}
 
-class Decode extends Module {
+class InstructionDecode extends Module {
   val io = IO(new Bundle() {
     val FeDec = Input(new FeDec())
     val DecEx = Output(new DecEx())

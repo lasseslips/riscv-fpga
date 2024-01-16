@@ -3,11 +3,12 @@ package Alu
 import chisel3._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
-import riscv.{Alu, BranchFunct}
+import riscv.lib.BranchFunct
+import riscv.stages.Execute
 
-class AluStageTest extends AnyFlatSpec with ChiselScalatestTester{
+class ExecuteStageTest extends AnyFlatSpec with ChiselScalatestTester{
   "ALUSTAGE" should "Pass" in {
-    test(new Alu) { dut =>
+    test(new Execute) { dut =>
 
       dut.io.DecEx.regData1.poke(14.U)
       dut.io.DecEx.regData2.poke(14.U)

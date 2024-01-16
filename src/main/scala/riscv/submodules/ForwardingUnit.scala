@@ -1,7 +1,9 @@
-package riscv
+package riscv.submodules
 
 import chisel3._
 import chisel3.util._
+import riscv.lib.{ForwardingType, RegWriteSrc}
+
 class ForwardingUnit extends Module {
   val io = IO(new Bundle() {
     val ExwrIdx = Input(UInt(5.W))
