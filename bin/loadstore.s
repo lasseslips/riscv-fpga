@@ -33,7 +33,7 @@ nop
 nop
 nop
 nop
-lw a3, 0(a1)
+lw a4, 0(a1)
 lw t0, 0(s3)
 lw t1, 0(s5)
 lw t2, 0(s7)

@@ -42,81 +42,125 @@ class DataMemory extends Module {
   val memInsReg = RegNext(memIns)
 
   val dataInVec = Wire(Vec(4, UInt(8.W)))
-  dataInVec(0) := dataIn(7,0)
-  dataInVec(1) := dataIn(15,8)
-  dataInVec(2) := dataIn(23,16)
-  dataInVec(3) := dataIn(31,24)
+  dataInVec := VecInit(Seq.fill(4)(0.U(8.W)))
 
   val mask = Wire(Vec(4, Bool()))
   mask := DontCare
   val signBit = Wire(Bool())
   signBit := DontCare
 
+  val byteOffset = addr(1,0)
 
-  switch(memIns) {
-    is(LoadStoreFunct.LB_SB.U) {
-      mask(0) := true.B
-      mask(1) := false.B
-      mask(2) := false.B
-      mask(3) := false.B
+  when(memIns === LoadStoreFunct.LB_SB.U | memIns === LoadStoreFunct.LBU.U) {
+    mask := VecInit(Seq.fill(4)(false.B))
+    mask(byteOffset) := true.B
+    dataInVec(byteOffset) := dataIn(7,0)
+  } .elsewhen(memIns === LoadStoreFunct.LH_SH.U | memIns === LoadStoreFunct.LHU.U) {
+    mask := VecInit(Seq.fill(4)(false.B))
+    when(byteOffset === 3.U) {
+      mask(byteOffset) := true.B
+      dataInVec(byteOffset) := dataIn(7,0)
+    } .otherwise {
+      mask(byteOffset) := true.B
+      mask(byteOffset + 1.U) := true.B
+      dataInVec(byteOffset) := dataIn(7,0)
+      dataInVec(byteOffset + 1.U) := dataIn(15,8)
     }
-    is(LoadStoreFunct.LH_SH.U) {
-      mask(0) := true.B
-      mask(1) := true.B
-      mask(2) := false.B
-      mask(3) := false.B
-    }
-    is(LoadStoreFunct.LW_SW.U) {
-      mask(0) := true.B
-      mask(1) := true.B
-      mask(2) := true.B
-      mask(3) := true.B
-    }
-    is(LoadStoreFunct.LBU.U) {
-      mask(0) := true.B
-      mask(1) := false.B
-      mask(2) := false.B
-      mask(3) := false.B
-    }
-    is(LoadStoreFunct.LHU.U) {
-      mask(0) := true.B
-      mask(1) := true.B
-      mask(2) := false.B
-      mask(3) := false.B
+  } .elsewhen(memIns === LoadStoreFunct.LW_SW.U) {
+    switch(byteOffset) {
+      is(0.U) {
+        mask(0) := true.B
+        mask(1) := true.B
+        mask(2) := true.B
+        mask(3) := true.B
+        dataInVec(0) := dataIn(7,0)
+        dataInVec(1) := dataIn(15,8)
+        dataInVec(2) := dataIn(23,16)
+        dataInVec(3) := dataIn(31,24)
+      }
+      is(1.U) {
+        mask(0) := false.B
+        mask(1) := true.B
+        mask(2) := true.B
+        mask(3) := true.B
+        dataInVec(1) := dataIn(7,0)
+        dataInVec(2) := dataIn(15,8)
+        dataInVec(3) := dataIn(23,16)
+      }
+      is(2.U) {
+        mask(0) := false.B
+        mask(1) := false.B
+        mask(2) := true.B
+        mask(3) := true.B
+        dataInVec(2) := dataIn(7,0)
+        dataInVec(3) := dataIn(15,8)
+      }
+      is(3.U) {
+        mask(0) := false.B
+        mask(1) := false.B
+        mask(2) := false.B
+        mask(3) := true.B
+        dataInVec(3) := dataIn(7,0)
+      }
     }
   }
   // 65536 x 32bit = 2,097,152 bit
   val mem = SyncReadMem(Math.pow(2, 16).toInt, Vec(4, UInt(8.W)), SyncReadMem.WriteFirst)
 
   when(memWrite) {
-    mem.write(addr,dataInVec,mask)
+    mem.write((addr - byteOffset),dataInVec,mask)
   }
-  data := mem.read(addr)
+  data := mem.read(addr - byteOffset)
 
 
-  //sw 00 00 00 a5 is stored as a negative number.
 
+  val byteOffsetReg = RegNext(byteOffset)
   switch(memInsReg) {
     is(LoadStoreFunct.LB_SB.U) {
-      signBit := data(0)(7)
-      dataOut := Cat(Fill(24,signBit), data(0))
+      signBit := data(byteOffsetReg)(7)
+      dataOut := Cat(Fill(24,signBit), data(byteOffsetReg))
     }
     is(LoadStoreFunct.LH_SH.U) {
-      signBit := data(1)(7)
-      dataOut := Cat(Fill(16,signBit), data(1),data(0))
+      signBit := data(byteOffsetReg + 1.U)(7)
+      when(byteOffsetReg === 3.U) {
+        dataOut := Cat(Fill(24,signBit), data(byteOffsetReg))
+      } .otherwise {
+        dataOut := Cat(Fill(16,signBit), data(byteOffsetReg+1.U),data(byteOffsetReg))
+      }
     }
     is(LoadStoreFunct.LW_SW.U) {
-      dataOut := Cat(data(3),data(2),data(1),data(0))
+      switch(byteOffsetReg) {
+        is(0.U) {
+          dataOut := Cat(data(3),data(2),data(1),data(0))
+        }
+        is(1.U) {
+          dataOut := Cat(Fill(8,0.U),data(3),data(2),data(1))
+        }
+        is(2.U) {
+          dataOut := Cat(Fill(16,0.U),data(3),data(2))
+        }
+        is(3.U) {
+          dataOut := Cat(Fill(24,0.U),data(3))
+        }
+      }
     }
     is(LoadStoreFunct.LBU.U) {
       signBit := false.B
-      dataOut := Cat(Fill(24,signBit),data(0))
+      dataOut := Cat(Fill(24,signBit),data(byteOffsetReg))
     }
     is(LoadStoreFunct.LHU.U) {
       signBit := false.B
-      dataOut := Cat(Fill(16,signBit), data(1),data(0))
+      when(byteOffsetReg === 3.U) {
+        dataOut := Cat(Fill(24,signBit), data(byteOffsetReg))
+      } .otherwise {
+        dataOut := Cat(Fill(16,signBit), data(byteOffsetReg+1.U),data(byteOffsetReg))
+      }
     }
   }
+
+
+
+
 
   val aluReg = RegNext(addr)
   io.MemWb.alu := aluReg
