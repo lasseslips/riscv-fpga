@@ -117,6 +117,11 @@ class DataPath(pathToBin: String = "") extends Module {
 }
 
 object Main extends App {
+  if (args.length < 1) {
+    println("Usage: sbt \"run <path to bin>\"")
+    sys.exit(1)
+  }
+  val filePath = args(0).split("\\.").dropRight(1).mkString(".")
   println("Generating RISC-V verilog")
-  emitVerilog(new DataPath("bin/print"), Array("--target-dir", "generated"))
+  emitVerilog(new DataPath(filePath), Array("--target-dir", "generated"))
 }
