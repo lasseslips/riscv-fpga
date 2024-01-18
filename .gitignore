@@ -5,7 +5,6 @@ project/
 target/
 test_run_dir/
 .metals/
-quartus/
 *.hex
 *.out
 *.bin
